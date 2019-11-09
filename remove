@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#  Copyright (C) 2015  Rafael Senties Martinelli 
+#  Copyright (C) 2015, 2019  Rafael Senties Martinelli 
 #
 #  This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License 3 as published by
@@ -31,4 +31,6 @@ if [ -d /usr/share/doc/vlist-player ]; then
 	rm -rf /usr/share/doc/build-deb
 fi
 
-echo "The removal is complete."
+if [ "$1" != "-s" ]; then
+	echo "The removal is complete."
+fi

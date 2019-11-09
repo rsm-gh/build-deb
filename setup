@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#  Copyright (C) 2015  Rafael Senties Martinelli 
+#  Copyright (C) 2015, 2019  Rafael Senties Martinelli 
 #
 #  This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License 3 as published by
@@ -15,27 +15,52 @@
 #   along with this program; if not, write to the Free Software Foundation,
 #   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 
+
+
+#
+# Set the scripts permisions
+#
+
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DIR
-#
-#
+
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root."
   exit
 fi
-#
-#
 
-chmod -R 0755 $DIR
-chown root:root -R $DIR
-
-echo -e "\n Removing previous versions...\n"
-./remove
-
-echo -e "\nInstalling...\n"
-
-cp -ar $DIR/usr/. /usr/
 
 #
+# Remove previous versions
 #
-echo -e "\n \e[00;32m The installation is complete. I hope you enjoy the software! -RSM \e[00m"
+echo -e "\e[00;32mRemoving previous versions..\e[00m"
+chmod a+x ./remove
+./remove -s
+
+
+#
+# Start the installation
+#
+
+
+echo -e "\e[00;32m\nInstalling the software files...\e[00m"
+
+function install_files(){
+    
+    echo "installing: $1"
+    
+    install -d $1
+    install -D $DIR$1/* $1
+    
+}
+
+install_files "/usr/bin"
+install_files "/usr/share/doc/build-deb"
+install_files "/usr/share/man/man8"
+
+
+#
+# End
+#
+
+echo -e "\e[00;32m\nThe installation is complete.\e[00m"
