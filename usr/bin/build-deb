@@ -17,17 +17,14 @@
 
 
 
-			## MODIFY THE MANUAL!
-
-
-	#########################################
-	#										#
-	#	Default Configuration:				#
-	#										#
-	#		You can modify this variables	#
-	#		to avoid using extra arguments	#
-	#										#
-	#########################################
+    #########################################
+    #                                       #
+    #   Default Configuration:              #
+    #                                       #
+    #       You can modify this variables   #
+    #       to avoid using extra arguments  #
+    #                                       #
+    #########################################
 
 
 DONT_INSTALL=0
@@ -39,12 +36,12 @@ DONT_COPY_CHANGELOG=0
 DONT_SIGN=0
 DONT_SIGN_TG=0
 
-# Program Variables	( They shouldn't be modified )
+# Program Variables ( They shouldn't be modified )
 #
 version=1.4~0
-RED="\e[31m"		
-RESET="\e[0m"		
-BLUE="\e[94m"		
+RED="\e[31m"        
+RESET="\e[0m"       
+BLUE="\e[94m"       
 
 OPTIONS_FILE=0
 BUILD=1
@@ -54,611 +51,611 @@ HELP=0
 
 
 
-	#####################################
-	#									#
-	#	Scan the arguments				#
-	#									#
-	#####################################
+    #####################################
+    #                                   #
+    #   Scan the arguments              #
+    #                                   #
+    #####################################
 
 
 function change_variables {
-	case "$1" in
-		-di|--dont-install)
-			DONT_INSTALL=1
-	;;
-		-drgv|--dont-replace-global-variables)
-			DONT_REPLACE_GLOBAL_VARIABLES=1
-	;;
-		-dcpc|--dont-copy-changelog)
-			DONT_COPY_CHANGELOG=1
-	;;
-		-frepo|--force-reprepro)
-			FORCE_REPREPRO=1
-	;;
-		-drepo| --dont-add-reprepro)
-			DONT_ADD_TO_REPREPRO=1
-	;;
-		-ds| --dont-sign)
-			DONT_SIGN=1
-	;;
-		-ds-tg| --dont-sign-targz)
-			DONT_SIGN_TG=1							
-	;;
-		-tg|--targz)
-			BUILD=2
-	;;
-		-deb-tg|--debian-targz)
-			BUILD=3		
-	;;
-		*)
-			echo -e "\e[31m '$1' is not an option, use 'build-deb --help' \e[0m"
-			exit
-	esac
+    case "$1" in
+        -di|--dont-install)
+            DONT_INSTALL=1
+    ;;
+        -drgv|--dont-replace-global-variables)
+            DONT_REPLACE_GLOBAL_VARIABLES=1
+    ;;
+        -dcpc|--dont-copy-changelog)
+            DONT_COPY_CHANGELOG=1
+    ;;
+        -frepo|--force-reprepro)
+            FORCE_REPREPRO=1
+    ;;
+        -drepo| --dont-add-reprepro)
+            DONT_ADD_TO_REPREPRO=1
+    ;;
+        -ds| --dont-sign)
+            DONT_SIGN=1
+    ;;
+        -ds-tg| --dont-sign-targz)
+            DONT_SIGN_TG=1                          
+    ;;
+        -tg|--targz)
+            BUILD=2
+    ;;
+        -deb-tg|--debian-targz)
+            BUILD=3     
+    ;;
+        *)
+            echo -e "\e[31m '$1' is not an option, use 'build-deb --help' \e[0m"
+            exit
+    esac
 }
 
 
 # Scan the arguments given in the terminal
 #
 if [[ -z "$1" ]]; then
-	echo "Invalid option. Use \"build-deb --help\""
-	BUILD=0
+    echo "Invalid option. Use \"build-deb --help\""
+    BUILD=0
 else
-	if 	[[ "$1" == "-c" ]] 				||
-		[[ "$1" == "--control" ]]		||
-		[[ "$1" == "-l" ]] 				||
-		[[ "$1" == "--license" ]]		||
-		[[ "$1" == "-v" ]] 				||
-		[[ "$1" == "--version" ]]		||
-		[[ "$1" == "-h" ]] 				||
-		[[ "$1" == "--options" ]]		||
-		[[ "$1" == "-o" ]] 				||
-		[[ "$1" == "--help" ]]	
-	then
-		case "$1" in
-			-l|--license)
-				LICENSE_DIALOG=1
-		;;
-			-h|--help)
-				HELP=1
-		;;
-			-v|--version)
-				echo "Version $version"
-		;;
-			-c|--control)
-				CONTROL_FILE_TEMPLATE=1
-		;;
-			-o|--options)
-				OPTIONS_FILE=1
-		esac
-		BUILD=0
-	else
-		local=$(pwd)
-		cd /
-		if [ -d "$1" ]; then
-			path="$1"
-		else
-			if [ -d "$local/$1" ]; then
-				path="$local/$1"
-			else
-				echo -e "$RED ERROR,you need to enter the path of a directory. \n(Or its name if you are working in the current directory) $RESET"
-				echo "$user_path"
-				exit 1
-			fi
-			
-		fi
-	
-		if [ "$(id -u)" != "0" ]; then
-			echo -e "$RED You need root permission for building deb packages.$RESET" 1>&2
-			exit 1
-		fi
-		
-		path_dirname=$(dirname "$path")
-		path_basename=$(basename "$path")	
-		cd "$path_dirname"
-	
-	fi
-	
-	# Scan the arguments by skiping the first one..
-	i=0
-	for var in "$@"; do
-		if [ "$i" -gt 0 ]; then
-			change_variables "$var"
-		fi
-		i=$((i+1))	
-	done
+    if  [[ "$1" == "-c" ]]              ||
+        [[ "$1" == "--control" ]]       ||
+        [[ "$1" == "-l" ]]              ||
+        [[ "$1" == "--license" ]]       ||
+        [[ "$1" == "-v" ]]              ||
+        [[ "$1" == "--version" ]]       ||
+        [[ "$1" == "-h" ]]              ||
+        [[ "$1" == "--options" ]]       ||
+        [[ "$1" == "-o" ]]              ||
+        [[ "$1" == "--help" ]]  
+    then
+        case "$1" in
+            -l|--license)
+                LICENSE_DIALOG=1
+        ;;
+            -h|--help)
+                HELP=1
+        ;;
+            -v|--version)
+                echo "Version $version"
+        ;;
+            -c|--control)
+                CONTROL_FILE_TEMPLATE=1
+        ;;
+            -o|--options)
+                OPTIONS_FILE=1
+        esac
+        BUILD=0
+    else
+        local=$(pwd)
+        cd /
+        if [ -d "$1" ]; then
+            path="$1"
+        else
+            if [ -d "$local/$1" ]; then
+                path="$local/$1"
+            else
+                echo -e "$RED ERROR,you need to enter the path of a directory. \n(Or its name if you are working in the current directory) $RESET"
+                echo "$user_path"
+                exit 1
+            fi
+            
+        fi
+    
+        if [ "$(id -u)" != "0" ]; then
+            echo -e "$RED You need root permission for building deb packages.$RESET" 1>&2
+            exit 1
+        fi
+        
+        path_dirname=$(dirname "$path")
+        path_basename=$(basename "$path")   
+        cd "$path_dirname"
+    
+    fi
+    
+    # Scan the arguments by skiping the first one..
+    i=0
+    for var in "$@"; do
+        if [ "$i" -gt 0 ]; then
+            change_variables "$var"
+        fi
+        i=$((i+1))  
+    done
 fi
 
 function scan_build_deb_file {
-	# Scan the arguments given in the BUILD_DEB file
-	#
-	if [ -f "$path/BUILD_DEB" ]; then
-		
-		#	Check for the option "arguments"
-		while read LINE; do
-			if [[ "$LINE" == "Arguments"* ]] ; then
-				string=${LINE#*:}
-				args=(${string//,/ })
-				for i in "${args[@]}"; do
-					change_variables "$i"
-				done
-			fi
-		done < "$path/BUILD_DEB"
-		
-		
-		#	Check for the option "add to reprepro"
-		if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
-			repo_location=''
-			repo_codename=''
-		
-			while read LINE; do
-				if [[ "$LINE" == "RepositoryLocation"* ]] ; then
-					repo_location=${LINE#*:}
-				elif [[ "$LINE" == "CodeName"* ]] ; then
-					repo_codename=${LINE#*:}
-				fi
-			done < "$path/BUILD_DEB"
-		
-			if [[ -n "$repo_location" ]] && [[ -n "$repo_codename" ]]; then
-				if [ -n "$repo_codename" ]; then
-					if [ -d "$repo_location" ]; then
-						if ! [ -d "$repo_location"/conf ]; then
-							echo -e "$RED The directory is not a valid reprepro repository. $RESET"
-							echo "$repo_location"
-							echo ""
-							DONT_ADD_TO_REPREPRO=1
-						fi
-					else
-						echo -e "$RED The repository location is not a directory.$RESET"
-						echo "$repo_location"
-						echo ""
-						DONT_ADD_TO_REPREPRO=1
-					fi
-				else
-					echo -e "$RED The distribution of the reprepro repository is missing. $RESET"
-					echo ""
-					DONT_ADD_TO_REPREPRO=1
-				fi
-			else
-				DONT_ADD_TO_REPREPRO=1
-			fi
-		fi
+    # Scan the arguments given in the BUILD_DEB file
+    #
+    if [ -f "$path/BUILD_DEB" ]; then
+        
+        #   Check for the option "arguments"
+        while read LINE; do
+            if [[ "$LINE" == "Arguments"* ]] ; then
+                string=${LINE#*:}
+                args=(${string//,/ })
+                for i in "${args[@]}"; do
+                    change_variables "$i"
+                done
+            fi
+        done < "$path/BUILD_DEB"
+        
+        
+        #   Check for the option "add to reprepro"
+        if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
+            repo_location=''
+            repo_codename=''
+        
+            while read LINE; do
+                if [[ "$LINE" == "RepositoryLocation"* ]] ; then
+                    repo_location=${LINE#*:}
+                elif [[ "$LINE" == "CodeName"* ]] ; then
+                    repo_codename=${LINE#*:}
+                fi
+            done < "$path/BUILD_DEB"
+        
+            if [[ -n "$repo_location" ]] && [[ -n "$repo_codename" ]]; then
+                if [ -n "$repo_codename" ]; then
+                    if [ -d "$repo_location" ]; then
+                        if ! [ -d "$repo_location"/conf ]; then
+                            echo -e "$RED The directory is not a valid reprepro repository. $RESET"
+                            echo "$repo_location"
+                            echo ""
+                            DONT_ADD_TO_REPREPRO=1
+                        fi
+                    else
+                        echo -e "$RED The repository location is not a directory.$RESET"
+                        echo "$repo_location"
+                        echo ""
+                        DONT_ADD_TO_REPREPRO=1
+                    fi
+                else
+                    echo -e "$RED The distribution of the reprepro repository is missing. $RESET"
+                    echo ""
+                    DONT_ADD_TO_REPREPRO=1
+                fi
+            else
+                DONT_ADD_TO_REPREPRO=1
+            fi
+        fi
 
-		#	Check for the option "copy the changelog"
-		if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
-		
-			while read LINE; do
-				if [[ "$LINE" == "CopyChangelog"* ]] ; then
-					changelog_dir_location=${LINE#*:}
-				fi
-			done < "$path/BUILD_DEB"
-						
-			if ! [ -z "$changelog_dir_location" ]; then
-			
-				changelog_path="$path_dirname"/"$path_basename"/usr/share/doc/"$Control_Package_name"/changelog
-				
-				if ! [ -d "$changelog_dir_location" ]; then
-					echo -e "$RED The path to copy the changelog doesn't exists. It will not be created.$RESET"
-					echo "$changelog_path"
-					echo ""
-				elif [ -f "$changelog_path" ]; then
-					changelog_file=$(cat $changelog_path)
-					DONT_COPY_CHANGELOG=0
-				else
-					DONT_COPY_CHANGELOG=1
-					echo -e "$RED Changelog missing in the source package.$RESET"
-					echo "$changelog_path"
-					echo ""
-				fi
-			else
-				DONT_COPY_CHANGELOG=1
-			fi
-		fi
+        #   Check for the option "copy the changelog"
+        if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
+        
+            while read LINE; do
+                if [[ "$LINE" == "CopyChangelog"* ]] ; then
+                    changelog_dir_location=${LINE#*:}
+                fi
+            done < "$path/BUILD_DEB"
+                        
+            if ! [ -z "$changelog_dir_location" ]; then
+            
+                changelog_path="$path_dirname"/"$path_basename"/usr/share/doc/"$Control_Package_name"/changelog
+                
+                if ! [ -d "$changelog_dir_location" ]; then
+                    echo -e "$RED The path to copy the changelog doesn't exists. It will not be created.$RESET"
+                    echo "$changelog_path"
+                    echo ""
+                elif [ -f "$changelog_path" ]; then
+                    changelog_file=$(cat $changelog_path)
+                    DONT_COPY_CHANGELOG=0
+                else
+                    DONT_COPY_CHANGELOG=1
+                    echo -e "$RED Changelog missing in the source package.$RESET"
+                    echo "$changelog_path"
+                    echo ""
+                fi
+            else
+                DONT_COPY_CHANGELOG=1
+            fi
+        fi
 
-		#	TarGz location
-		#
-		TarGzLocation=""
-		while read LINE; do
-			if [[ "$LINE" == "TarGzLocation:"* ]] ; then
-				TarGzLocation=${LINE#*:}
-			fi
-		done < "$path/BUILD_DEB"
-		
-		if ! [[ -z "$TarGzLocation" ]] && ! [ -d "$TarGzLocation" ]; then
-			echo -e "$RED The directory of the TarGz package doesn't exists. $RESET"
-			echo "$TarGzLocation"
-			exit
-		fi
-			
-	else
-		DONT_COPY_CHANGELOG=1
-		DONT_ADD_TO_REPREPRO=1
-	fi
+        #   TarGz location
+        #
+        TarGzLocation=""
+        while read LINE; do
+            if [[ "$LINE" == "TarGzLocation:"* ]] ; then
+                TarGzLocation=${LINE#*:}
+            fi
+        done < "$path/BUILD_DEB"
+        
+        if ! [[ -z "$TarGzLocation" ]] && ! [ -d "$TarGzLocation" ]; then
+            echo -e "$RED The directory of the TarGz package doesn't exists. $RESET"
+            echo "$TarGzLocation"
+            exit
+        fi
+            
+    else
+        DONT_COPY_CHANGELOG=1
+        DONT_ADD_TO_REPREPRO=1
+    fi
 }
 
 
-	#####################################
-	#									#
-	#	Do the work						#
-	#									#
-	#####################################
+    #####################################
+    #                                   #
+    #   Do the work                     #
+    #                                   #
+    #####################################
 
 function sign_the_package {
-	#
-	# This function takes as argument "deb" to sign Debian packages
-	#
+    #
+    # This function takes as argument "deb" to sign Debian packages
+    #
 
-	if [ $DONT_SIGN -eq 1 ]; then
-		:
-	elif ! [[ "$1" == "deb" ]] && [[ $DONT_SIGN_TG -eq 1 ]]; then
-		:
-	else
-		signed=0
-		while read LINE; do
-		   if [[ "$LINE" == *\<*\@*\>* ]] ; then
-			  signed=1
-			  EMAIL=${LINE%>*}
-			  EMAIL=$(echo "$EMAIL" | sed 's/^.*<//')
-			  break
-		   fi
-		done < "$path"/DEBIAN/control
-		if [ $signed -eq 1 ]; then
-			echo -e "\n$BLUE Email found in the control file,$RESET"
-			GPG=$(gpg --list-keys)
-			if [[ "$GPG" == *"$EMAIL"* ]] ; then
-				echo -e "$BLUE Signing the package..$RESET"
-				if [ "$1" == "deb" ]; then
-					dpkg-sig -k "$EMAIL" --sign builder "$path_dirname/$new_basename".deb
-				else
-					if ! [ -z "$TarGzLocation" ]; then
-						gpg --local-user $EMAIL --detach --sign "$TarGzLocation/$new_basename".tar.gz
-					else
-						gpg --local-user $EMAIL --detach --sign "$path_dirname/$new_basename".tar.gz
-					fi
-				fi
-			else
-				echo -e "$RED The root keyring do not contains the private key for $EMAIL.\n the package won't be signed.$RESET"
-			fi
-		else
-			echo -e "\n$RED The email is missing in the control file.$RESET"
-		fi
-	fi
-}	
+    if [ $DONT_SIGN -eq 1 ]; then
+        :
+    elif ! [[ "$1" == "deb" ]] && [[ $DONT_SIGN_TG -eq 1 ]]; then
+        :
+    else
+        signed=0
+        while read LINE; do
+           if [[ "$LINE" == *\<*\@*\>* ]] ; then
+              signed=1
+              EMAIL=${LINE%>*}
+              EMAIL=$(echo "$EMAIL" | sed 's/^.*<//')
+              break
+           fi
+        done < "$path"/DEBIAN/control
+        if [ $signed -eq 1 ]; then
+            echo -e "\n$BLUE Email found in the control file,$RESET"
+            GPG=$(gpg --list-keys)
+            if [[ "$GPG" == *"$EMAIL"* ]] ; then
+                echo -e "$BLUE Signing the package..$RESET"
+                if [ "$1" == "deb" ]; then
+                    dpkg-sig -k "$EMAIL" --sign builder "$path_dirname/$new_basename".deb
+                else
+                    if ! [ -z "$TarGzLocation" ]; then
+                        gpg --local-user $EMAIL --detach --sign "$TarGzLocation/$new_basename".tar.gz
+                    else
+                        gpg --local-user $EMAIL --detach --sign "$path_dirname/$new_basename".tar.gz
+                    fi
+                fi
+            else
+                echo -e "$RED The root keyring do not contains the private key for $EMAIL.\n the package won't be signed.$RESET"
+            fi
+        else
+            echo -e "\n$RED The email is missing in the control file.$RESET"
+        fi
+    fi
+}   
 
 
 function clean_data {
-	# Clean the data created by the program
-	#
-	echo -e "\n$BLUE Cleaning the current directory..$RESET"
-	rm -rf "$path"
-	echo " "	
-}	
+    # Clean the data created by the program
+    #
+    echo -e "\n$BLUE Cleaning the current directory..$RESET"
+    rm -rf "$path"
+    echo " "    
+}   
 
 function copy_changelog {
-	if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
-		echo -e "\n$BLUE Copying the chagelog..$RESET"
-		echo "$changelog_file" > "$changelog_dir_location"/"$new_basename".changelog
-		echo -e " "
-	fi
+    if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
+        echo -e "\n$BLUE Copying the chagelog..$RESET"
+        echo "$changelog_file" > "$changelog_dir_location"/"$new_basename".changelog
+        echo -e " "
+    fi
 }
 
 function build_debian_package {
 
-	# Remove the files of the root folder
-	for file in "$path_dirname/$new_basename"_tmp/* ;do
-		if [ -f "$file" ]; then
-			rm -rf "$file"
-			echo "Deleted: ${file#$path}"
-		fi
-	done
+    # Remove the files of the root folder
+    for file in "$path_dirname/$new_basename"_tmp/* ;do
+        if [ -f "$file" ]; then
+            rm -rf "$file"
+            echo "Deleted: ${file#$path}"
+        fi
+    done
 
-	# Build the package
-	#
-	echo -e "\n $BLUE Building $new_basename..$RESET"
-	dpkg -b "$path"
-	if ! [ -f "$path".deb ]; then
-		echo -e "\n $RED The deb package is missing! the program will exit.$RESET"
-		rm -rf "$path"
-		exit 1
-	fi
+    # Build the package
+    #
+    echo -e "\n $BLUE Building $new_basename..$RESET"
+    dpkg -b "$path"
+    if ! [ -f "$path".deb ]; then
+        echo -e "\n $RED The deb package is missing! the program will exit.$RESET"
+        rm -rf "$path"
+        exit 1
+    fi
 
-	mv "$path".deb "$path_dirname"/"$new_basename".deb
-	
-	
-	# Install the package
-	#
-	if [ $DONT_INSTALL -eq 0 ]; then
-		echo -e "\n$BLUE Installing the package..$RESET"
-		dpkg -i "$path_dirname/$new_basename".deb
-		echo " "
-	fi
-	
-	# Add the pacakge to reprepro
-	#
-	if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
-		echo -e "$BLUE Adding the package to the local repository $RESET"
-		cd "$repo_location"
-	
-		if [ "$FORCE_REPREPRO" -eq 1 ]; then
-			/usr/bin/reprepro remove "$repo_codename" "$Control_Package_name"
-		fi
-		
-		/usr/bin/reprepro --ask-passphrase -Vb . includedeb "$repo_codename" "$path_dirname"/"$new_basename".deb
-		echo ""
-	fi
-		
+    mv "$path".deb "$path_dirname"/"$new_basename".deb
+    
+    
+    # Install the package
+    #
+    if [ $DONT_INSTALL -eq 0 ]; then
+        echo -e "\n$BLUE Installing the package..$RESET"
+        dpkg -i "$path_dirname/$new_basename".deb
+        echo " "
+    fi
+    
+    # Add the pacakge to reprepro
+    #
+    if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
+        echo -e "$BLUE Adding the package to the local repository $RESET"
+        cd "$repo_location"
+    
+        if [ "$FORCE_REPREPRO" -eq 1 ]; then
+            /usr/bin/reprepro remove "$repo_codename" "$Control_Package_name"
+        fi
+        
+        /usr/bin/reprepro --ask-passphrase -Vb . includedeb "$repo_codename" "$path_dirname"/"$new_basename".deb
+        echo ""
+    fi
+        
 }
 
 function build_tg_package {
-	echo -e "$BLUE Compressing TarGz \"$new_basename\"..$RESET"
+    echo -e "$BLUE Compressing TarGz \"$new_basename\"..$RESET"
 
-	if ! [ -z "$TarGzLocation" ]; then
-		tar -pczf "$TarGzLocation/$new_basename".tar.gz -C "$path" .
-	else
-		tar -pczf "$path_dirname/$new_basename".tar.gz -C "$path" .	
-	fi	
+    if ! [ -z "$TarGzLocation" ]; then
+        tar -pczf "$TarGzLocation/$new_basename".tar.gz -C "$path" .
+    else
+        tar -pczf "$path_dirname/$new_basename".tar.gz -C "$path" . 
+    fi  
 }
 
 
 if [ $BUILD -gt 0 ]; then
 
 
-	#############################
-	#							#
-	#	Initialize the package 	#
-	#							#
-	#############################
+    #############################
+    #                           #
+    #   Initialize the package  #
+    #                           #
+    #############################
 
-	if ! [ -f "$path/DEBIAN/control" ]; then
-		echo -e "$RED The control file is missing.$RESET"
-		exit
-	fi
-	
-	echo -e "\n$BLUE Initializing the package.. $RESET"
-	
-	Control_Version=""
-	Control_Package_name=""
-	Control_Architecture=""
-	TarGzLocation=""
-		
-	while read LINE; do
-		if [[ "$LINE" == *"Version:"* ]] ; then
-			Control_Version=$(echo "$LINE" | sed 's/^.*Version://')
-			Control_Version=${Control_Version// /}
-		elif [[ "$LINE" == *"Package:"* ]] ; then
-			Control_Package_name=$(echo "$LINE" | sed 's/^.*Package://')
-			Control_Package_name=${Control_Package_name// /}
-		elif [[ "$LINE" == *"Architecture:"* ]] ; then
-			Control_Architecture=$(echo "$LINE" | sed 's/^.*Architecture://')
-			Control_Architecture=${Control_Architecture// /}
-		fi
-	done < "$path"/DEBIAN/control
-	
-	
-	if [ -z "$Control_Package_name" ]; then
-		echo -e "$RED The control package name is missing. $RESET"
-		exit
-	fi
-	
-	if [ -z "$Control_Version" ]; then
-		echo -e "$RED The control package version is missing. $RESET"
-		exit
-	fi
-	
-	if [ -z "$Control_Architecture" ]; then
-		echo -e "$RED The control package architecture is missing. $RESET"
-		exit
-	fi
-	
-	scan_build_deb_file
-	
-	new_basename="$Control_Package_name"_"$Control_Version"_"$Control_Architecture"
-	
-	# Copy of the original folder (We work with a temporary folder, not with the original.)
-	#
-	rsync -av --delete "$path/" "$path_dirname/$new_basename"_tmp > /dev/null
-	path="$path_dirname/$new_basename"_tmp
-	
-	if ! [ -d  "$path" ]; then
-		echo -e "$RED Some error happened while copying the data. $RESET"
-		echo "$path"
-		exit
-	fi
-	cd "$path"
-	
-	# change the folder permissions
-	#
-	chown root:root -R "$path"
-		
-	
-	# remove the .git folder
-	#
-	if [ -d "$path"/.git ]; then
-		rm -rf "$path"/.git
-		echo "Deleted: /.git"
-	fi
+    if ! [ -f "$path/DEBIAN/control" ]; then
+        echo -e "$RED The control file is missing.$RESET"
+        exit
+    fi
+    
+    echo -e "\n$BLUE Initializing the package.. $RESET"
+    
+    Control_Version=""
+    Control_Package_name=""
+    Control_Architecture=""
+    TarGzLocation=""
+        
+    while read LINE; do
+        if [[ "$LINE" == *"Version:"* ]] ; then
+            Control_Version=$(echo "$LINE" | sed 's/^.*Version://')
+            Control_Version=${Control_Version// /}
+        elif [[ "$LINE" == *"Package:"* ]] ; then
+            Control_Package_name=$(echo "$LINE" | sed 's/^.*Package://')
+            Control_Package_name=${Control_Package_name// /}
+        elif [[ "$LINE" == *"Architecture:"* ]] ; then
+            Control_Architecture=$(echo "$LINE" | sed 's/^.*Architecture://')
+            Control_Architecture=${Control_Architecture// /}
+        fi
+    done < "$path"/DEBIAN/control
+    
+    
+    if [ -z "$Control_Package_name" ]; then
+        echo -e "$RED The control package name is missing. $RESET"
+        exit
+    fi
+    
+    if [ -z "$Control_Version" ]; then
+        echo -e "$RED The control package version is missing. $RESET"
+        exit
+    fi
+    
+    if [ -z "$Control_Architecture" ]; then
+        echo -e "$RED The control package architecture is missing. $RESET"
+        exit
+    fi
+    
+    scan_build_deb_file
+    
+    new_basename="$Control_Package_name"_"$Control_Version"_"$Control_Architecture"
+    
+    # Copy of the original folder (We work with a temporary folder, not with the original.)
+    #
+    rsync -av --delete "$path/" "$path_dirname/$new_basename"_tmp > /dev/null
+    path="$path_dirname/$new_basename"_tmp
+    
+    if ! [ -d  "$path" ]; then
+        echo -e "$RED Some error happened while copying the data. $RESET"
+        echo "$path"
+        exit
+    fi
+    cd "$path"
+    
+    # change the folder permissions
+    #
+    chown root:root -R "$path"
+        
+    
+    # remove the .git folder
+    #
+    if [ -d "$path"/.git ]; then
+        rm -rf "$path"/.git
+        echo "Deleted: /.git"
+    fi
 
-	#############################
-	#							#
-	#	Modify the package 		#
-	#							#
-	#############################
+    #############################
+    #                           #
+    #   Modify the package      #
+    #                           #
+    #############################
 
-	# remove some possible existing data created by a previous build
-	#
-	if [ -f "/tmp/build_paths" ]; then
-		rm -rf "/tmp/build_paths"
-	fi
-	find $PWD > "/tmp/build_paths"
-	
-	
-	# Replace the global variables, change the files permissions and delete the backups
-	#
-	current_year=$(date +"%Y")
-	current_date_time=$(date)
-	current_date=$(date +%Y-%m-%d)
-	
-	while read LINE; do
-		if [ -f "$LINE" ]; then
-			
-			mimetype=$(file --mime-type "$LINE")
-			local_path=${LINE#$path}
-			base_name=${LINE##*/}
-			
-			if [ "$DONT_REPLACE_GLOBAL_VARIABLES" -eq 0 ]; then
-				if grep -q "DEB_BUILDER_VERSION" "$LINE"; then
-					sed -i "s/DEB_BUILDER_VERSION/$Control_Version/g" "$LINE"
-					echo "Version Replaced: $local_path"
-				fi
-				
-				if grep -q "DEB_BUILDER_DATE_TIME" "$LINE"; then
-					sed -i "s/DEB_BUILDER_DATE_TIME/$current_date_time/g" "$LINE"
-					echo "Date Time Replaced: $local_path"
-				fi
-				
-				if grep -q "DEB_BUILDER_YEAR" "$LINE"; then
-					sed -i "s/DEB_BUILDER_YEAR/$current_year/g" "$LINE"
-					echo "Year Replaced: $local_path"
-				fi
-				
-				if grep -q "DEB_BUILDER_DATE" "$LINE"; then
-					sed -i "s/DEB_BUILDER_DATE/$current_date/g" "$LINE"
-					echo "Date Replaced: $local_path"
-				fi
-			fi
-			
+    # remove some possible existing data created by a previous build
+    #
+    if [ -f "/tmp/build_paths" ]; then
+        rm -rf "/tmp/build_paths"
+    fi
+    find $PWD > "/tmp/build_paths"
+    
+    
+    # Replace the global variables, change the files permissions and delete the backups
+    #
+    current_year=$(date +"%Y")
+    current_date_time=$(date)
+    current_date=$(date +%Y-%m-%d)
+    
+    while read LINE; do
+        if [ -f "$LINE" ]; then
+            
+            mimetype=$(file --mime-type "$LINE")
+            local_path=${LINE#$path}
+            base_name=${LINE##*/}
+            
+            if [ "$DONT_REPLACE_GLOBAL_VARIABLES" -eq 0 ]; then
+                if grep -q "DEB_BUILDER_VERSION" "$LINE"; then
+                    sed -i "s/DEB_BUILDER_VERSION/$Control_Version/g" "$LINE"
+                    echo "Version Replaced: $local_path"
+                fi
+                
+                if grep -q "DEB_BUILDER_DATE_TIME" "$LINE"; then
+                    sed -i "s/DEB_BUILDER_DATE_TIME/$current_date_time/g" "$LINE"
+                    echo "Date Time Replaced: $local_path"
+                fi
+                
+                if grep -q "DEB_BUILDER_YEAR" "$LINE"; then
+                    sed -i "s/DEB_BUILDER_YEAR/$current_year/g" "$LINE"
+                    echo "Year Replaced: $local_path"
+                fi
+                
+                if grep -q "DEB_BUILDER_DATE" "$LINE"; then
+                    sed -i "s/DEB_BUILDER_DATE/$current_date/g" "$LINE"
+                    echo "Date Replaced: $local_path"
+                fi
+            fi
+            
 
-			if [[ $base_name == *.pyc ]]						||
-				 [[ $base_name == *~ ]]							; then
-				rm -rf "$LINE"
-				echo "Deleted: $local_path"
-				
-			elif [[ $mimetype == *text/troff* ]]	; then
-				gzip "$LINE"
-				echo "Gzip: $local_path"
-			
-			elif [[ $mimetype == *text/x-shellscript* ]]		|| 
-				 [[ $mimetype == *text/x-python* ]] 			||
-				 [[ $mimetype == *text/x-ruby* ]] 				||
-				 [[ $mimetype == *application/x-executable* ]]	||
-				 [[ $mimetype == *application/octet-stream* ]]	||
-				 [[ $mimetype == *text/x-perl* ]] 				||
-				 [[ $mimetype == *inode/x-empty* ]]				|| # mimetype of __init__.py
-				 [[ $base_name == *.py ]] 						||
-				 [[ $base_name == *.rb ]] 						||
-				 [[ $base_name == *.pl ]] 						||
-				 [[ $base_name == *.sh ]]						; then 
-				 
-				chmod 0755 "$LINE"
-				echo "0755: $local_path"
-			fi
-		fi
-	done < "/tmp/build_paths"
-	
-	
-	# Replace the variables of the control file
-	#
-	Folder_Size=$(du -sb $path | cut -f1)
-	DEBIAN_Size=$(du -sb $path/DEBIAN | cut -f1)
-	SIZE=$((Folder_Size-DEBIAN_Size))
-	SIZE=$((SIZE/1000))
-	echo -e "\n$BLUE Installed Program Size: $SIZE kB $RESET"
-	sed -i "s/DEB_BUILDER_SIZE/$SIZE/g" "$path/DEBIAN/control"
-	echo " "
-
-
-	#############################
-	#							#
-	#	Build			 		#
-	#							#
-	#############################
-
-	if [ $BUILD -eq 1 ]; then # Debian Package
-		build_debian_package
-		sign_the_package deb
-		clean_data
-		copy_changelog
+            if [[ $base_name == *.pyc ]]                        ||
+                 [[ $base_name == *~ ]]                         ; then
+                rm -rf "$LINE"
+                echo "Deleted: $local_path"
+                
+            elif [[ $mimetype == *text/troff* ]]    ; then
+                gzip "$LINE"
+                echo "Gzip: $local_path"
+            
+            elif [[ $mimetype == *text/x-shellscript* ]]        || 
+                 [[ $mimetype == *text/x-python* ]]             ||
+                 [[ $mimetype == *text/x-ruby* ]]               ||
+                 [[ $mimetype == *application/x-executable* ]]  ||
+                 [[ $mimetype == *application/octet-stream* ]]  ||
+                 [[ $mimetype == *text/x-perl* ]]               ||
+                 [[ $mimetype == *inode/x-empty* ]]             || # mimetype of __init__.py
+                 [[ $base_name == *.py ]]                       ||
+                 [[ $base_name == *.rb ]]                       ||
+                 [[ $base_name == *.pl ]]                       ||
+                 [[ $base_name == *.sh ]]                       ; then 
+                 
+                chmod 0755 "$LINE"
+                echo "0755: $local_path"
+            fi
+        fi
+    done < "/tmp/build_paths"
+    
+    
+    # Replace the variables of the control file
+    #
+    Folder_Size=$(du -sb $path | cut -f1)
+    DEBIAN_Size=$(du -sb $path/DEBIAN | cut -f1)
+    SIZE=$((Folder_Size-DEBIAN_Size))
+    SIZE=$((SIZE/1000))
+    echo -e "\n$BLUE Installed Program Size: $SIZE kB $RESET"
+    sed -i "s/DEB_BUILDER_SIZE/$SIZE/g" "$path/DEBIAN/control"
+    echo " "
 
 
-	elif [ $BUILD -eq 2 ]; then # Tar Gz
-		build_tg_package
-		sign_the_package tg
-		clean_data
-		copy_changelog
+    #############################
+    #                           #
+    #   Build                   #
+    #                           #
+    #############################
 
-	elif [ $BUILD -eq 3 ]; then # Deb & Tar Gz
-		build_tg_package
-		sign_the_package tg
+    if [ $BUILD -eq 1 ]; then # Debian Package
+        build_debian_package
+        sign_the_package deb
+        clean_data
+        copy_changelog
 
-		echo -e "\n$BLUE Building the Debian Package $RESET"
-		build_debian_package
-		sign_the_package deb
 
-		clean_data
-		copy_changelog
-	fi
+    elif [ $BUILD -eq 2 ]; then # Tar Gz
+        build_tg_package
+        sign_the_package tg
+        clean_data
+        copy_changelog
+
+    elif [ $BUILD -eq 3 ]; then # Deb & Tar Gz
+        build_tg_package
+        sign_the_package tg
+
+        echo -e "\n$BLUE Building the Debian Package $RESET"
+        build_debian_package
+        sign_the_package deb
+
+        clean_data
+        copy_changelog
+    fi
 fi
 
-	#####################################
-	#									#
-	#	Extra Functions					#
-	#									#
-	#####################################
+    #####################################
+    #                                   #
+    #   Extra Functions                 #
+    #                                   #
+    #####################################
 
 # help message
 #
 if [ "$HELP" -eq 1 ]; then
-	echo "
+    echo "
  Usage:
-	build-deb [First Command] [Arguments..]
-			
+    build-deb [First Command] [Arguments..]
+            
  First Command:
-	
-	<source folder>	Folder containing a DEBIAN structure.
-			*By default it builds a Debian Package.
-		
-	-c, 	--control	Template of the control file.
-	-o, 	--options	Template of the options file.
+    
+    <source folder> Folder containing a DEBIAN structure.
+            *By default it builds a Debian Package.
+        
+    -c,     --control   Template of the control file.
+    -o,     --options   Template of the options file.
 
-	-h, 	-help		Display this dialog.
-	-v,	--version	Display the current version.
-	-l, 	--license	Display the license.
-	
+    -h,     -help       Display this dialog.
+    -v, --version   Display the current version.
+    -l,     --license   Display the license.
+    
  Arguments:
   
-	-di,		--dont-install	
-	-drgv,		--dont-replace-global-variables
-	-dcpc,		--dont-copy-changelog
-	-frepo, 	--force-reprepro
-	-drepo, 	--dont-add-reprepro
-	-tg, 		--targz
-	-deb-tg,	--debian-targz
-	-ds,		--dont-sign
-	-ds-tg,		--dont-sign-targz
-	
+    -di,        --dont-install  
+    -drgv,      --dont-replace-global-variables
+    -dcpc,      --dont-copy-changelog
+    -frepo,     --force-reprepro
+    -drepo,     --dont-add-reprepro
+    -tg,        --targz
+    -deb-tg,    --debian-targz
+    -ds,        --dont-sign
+    -ds-tg,     --dont-sign-targz
+    
  Global Variables:
 
-	DEB_BUILDER_VERSION	Value of the Version field of the control file.	
-	DEB_BUILDER_DATE_TIME	Format: \"Sat Jan 10 16:32:30 CET 2015\"
-	DEB_BUILDER_YEAR	Format: \"2015\"
-	DEB_BUILDER_DATE	Format: \"Year-Month-Day\"
-	
-	
+    DEB_BUILDER_VERSION Value of the Version field of the control file. 
+    DEB_BUILDER_DATE_TIME   Format: \"Sat Jan 10 16:32:30 CET 2015\"
+    DEB_BUILDER_YEAR    Format: \"2015\"
+    DEB_BUILDER_DATE    Format: \"Year-Month-Day\"
+    
+    
  Control File:
 
-	Installed-Size: DEB_BUILDER_SIZE
-	
+    Installed-Size: DEB_BUILDER_SIZE
+    
 "
 fi
 
 # reprepro file (template)
 #
 if [ $OPTIONS_FILE -eq 1 ]; then
-	echo "
-#	This is a build-deb Configuration file. 
-#	With this file you can customize the way of building packages. If you let an option
-#	empty, it won't be used.	
+    echo "
+#   This is a build-deb Configuration file. 
+#   With this file you can customize the way of building packages. If you let an option
+#   empty, it won't be used.    
 
-# Default arguments separated by commas	
+# Default arguments separated by commas 
 Arguments:
 
 # This is to add your package to a reprepro repository
@@ -672,18 +669,18 @@ CopyChangelog:
 TarGzLocation:
 
 " > BUILD_DEB
-fi	
+fi  
 
 # control file (template)
 #
 if [ $CONTROL_FILE_TEMPLATE -eq 1 ]; then
-	if ! [ -d DEBIAN ]; then
-		mkdir DEBIAN
-	fi
-	if [ -f DEBIAN/control ]; then
-		echo "The control file already exists."
-	else
-		echo "Package:
+    if ! [ -d DEBIAN ]; then
+        mkdir DEBIAN
+    fi
+    if [ -f DEBIAN/control ]; then
+        echo "The control file already exists."
+    else
+        echo "Package:
 Version:
 Architecture:
 Maintainer: name <email>
@@ -697,13 +694,13 @@ Description: Here you put a 1 line description, Less than 80 chars
  .
  The point makes an empty line between the first paragraph and this one...
 " > DEBIAN/control
-	fi
+    fi
 fi
 
 
 
 if [ $LICENSE_DIALOG -eq 1 ]; then
-	echo "
+    echo "
 Copyright (C) 2014-2015  Rafael Senties Martinelli 
 
 This program is free software; you can redistribute it and/or modify

@@ -5,7 +5,7 @@ NAME
         build-deb - Easy Debian/Tar.Gz package builder.
 
 HOME
-        https://rsm.website/software/gnu-linux/software/build-deb
+        https://github.com/rsm-gh/build-deb
 
 DESCRIPTION
        This  program  allows  you to create Debian packages for binaries or interpreted languages (Python, Bash, Pearl.. etc..). You must keep in mind that this is only to create "basic" Debian
@@ -34,7 +34,7 @@ FIRST COMMAND
                              - and more..
 
               <source folder>  can be either an absolute path or the name of a directory placed in the current working directory. The source folder must contain a  DEBIAN  STRUCTURE!  Tutorial:
-              https://rsm.website/tutorials/gnu-linux/debian-packages/#build  *Note:  Since the program automatically rename the packages "program-name_program-version_architecture" your source
+              https://stackoverflow.com/a/25275227/3672754  *Note:  Since the program automatically rename the packages "program-name_program-version_architecture" your source
               folder can contain a different name. This is pretty useful to create links outside the folder to prevent you from navigating trough the un-useful directories.
 
               **To cancel the process use ctrl-c rather than closing the window.
