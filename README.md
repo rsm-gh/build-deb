@@ -1,3 +1,6 @@
+For understanding the bascis of Debian packages you can read [the following article](https://github.com/rsm-gh/build-deb/blob/master/README.md).
+
+
 ```
 build-deb(8)                                                                         System Manager's Manual                                                                         build-deb(8)
 
