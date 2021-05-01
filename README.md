@@ -1,6 +1,6 @@
 
 Remarks:
-+ For understanding the bascis of Debian packages you can read [the following article](https://github.com/rsm-gh/build-deb/blob/master/README.md).
++ For understanding the bascis of Debian packages you can read [the following article](https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md).
 + The copyright of the software [is defined here](https://github.com/rsm-gh/build-deb/blob/master/usr/share/doc/build-deb/copyright).
 
 
