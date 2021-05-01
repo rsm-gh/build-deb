@@ -1,6 +1,7 @@
 
 Remarks:
 + For understanding the bascis of Debian packages you can read [the following article](https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md).
++ The Debian package of build-deb is build using build-deb. This build is very special and the argument `--dont-replace-global-variables` shall always be used. The source can be found under the released tab with the name "build-deb-pkgsrc".
 + The copyright of the software [is defined here](https://github.com/rsm-gh/build-deb/blob/master/usr/share/doc/build-deb/copyright).
 
 
