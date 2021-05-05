@@ -3,7 +3,7 @@
 
 For understanding the bascis of Debian packages you can read [the following article](https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md).
 
-Build-Deb Manual:
+
 ```
 build-deb(8)                                                                         System Manager's Manual                                                                         build-deb(8)
 
