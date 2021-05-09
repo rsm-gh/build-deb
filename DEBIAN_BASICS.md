@@ -133,8 +133,7 @@ Description: Here you can put a one line description. This is the short Descript
 
   
 ### Bonus
-Doing all the previous steps, and filling the control file it is some times annoying and time consuming. This is why I created [build-deb](https://github.com/rsm-gh/build-deb).
-build-deb will allow you to easily build and customize your packages with out doing any effort.
+Doing all the previous steps, and filling the control file it is some times annoying and time consuming. This is why I created [build-deb](https://github.com/rsm-gh/build-deb), it will allow you to easily create and customize your packages without doing any effort.
 
 ___________
 
