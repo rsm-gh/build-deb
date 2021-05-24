@@ -137,7 +137,7 @@ Doing all the previous steps, and filling the control file it is some times anno
 
 ___________
 
-Publish on October 8, 2014.  
+Publish on October 8, 2014 by Rafael Senties Martinelli.  
 Last Modification on January 11, 2016.  
 Hosted on GitHub since 27 April, 2021. 
 
