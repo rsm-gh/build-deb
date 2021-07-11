@@ -141,5 +141,5 @@ Publish on October 8, 2014 by Rafael Senties Martinelli.
 Last Modification on January 11, 2016.  
 Hosted on GitHub since 27 April, 2021. 
 
-The concent of this page is released under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fr) license.
+The content of this page is released under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fr) license.
 
