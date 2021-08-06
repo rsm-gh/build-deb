@@ -133,11 +133,15 @@ Description: Here you can put a one line description. This is the short Descript
 
   
 ### Bonus
-Doing all the previous steps, and filling the control file it is some times annoying and time consuming. This is why I created [build-deb](https://github.com/rsm-gh/build-deb), it will allow you to easily create and customize your packages without doing any effort.
+**Doing all the previous steps, and filling the control file can become annoying and time consuming. That's why I created [build-deb](https://github.com/rsm-gh/build-deb). It allows to easily create and customize packages without doing any effort.**
 
-___________
+Happy white hacking :}
 
-Publish on October 8, 2014 by Rafael Senties Martinelli.  
+-----------
+-----------
+
+
+Publish on 2014 by Rafael Senties Martinelli.  
 Last Modification on January 11, 2016.  
 Hosted on GitHub since 27 April, 2021. 
 
