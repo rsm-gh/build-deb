@@ -39,8 +39,8 @@ FIRST COMMAND
                              - Copy the changelog somewhere.
                              - and more..
 
-              <source folder>  can be either an absolute path or the name of a directory placed in the current working directory. The source folder must contain a  DEBIAN  STRUCTURE!  Tutorial:
-              https://stackoverflow.com/a/25275227/3672754  *Note:  Since the program automatically rename the packages "program-name_program-version_architecture" your source
+              <source folder>  can be either an absolute path or the name of a directory placed in the current working directory. The source folder must contain a  DEBIAN  STRUCTURE!  Tutorial: https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md
+              *Note:  Since the program automatically rename the packages "program-name_program-version_architecture" the source
               folder can contain a different name. This is pretty useful to create links outside the folder to prevent you from navigating trough the un-useful directories.
 
               **To cancel the process use ctrl-c rather than closing the window.
