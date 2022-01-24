@@ -135,8 +135,6 @@ Description: Here you can put a one line description. This is the short Descript
 ### Bonus
 **Doing all the previous steps, and filling the control file can become annoying and time consuming. That's why I created [build-deb](https://github.com/rsm-gh/build-deb). It allows to easily create and customize packages without doing any effort.**
 
-Happy white hacking :}
-
 -----------
 -----------
 
