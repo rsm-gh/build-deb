@@ -114,7 +114,7 @@ Doing all the previous steps, and filling the control file can become annoying a
 
 -----------
 -----------
-Publish on 2014 by Rafael Senties Martinelli.  
+Publish [on 2014 by Rafael Senties Martinelli](https://www.senties-martinelli.com/articles/debian-packages).  
 Last Modification on January 11, 2016.  
 Hosted on GitHub since 27 April, 2021. 
 The content of this page is released under the [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fr) license.
