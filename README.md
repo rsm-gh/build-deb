@@ -1,7 +1,7 @@
 **For understanding the basics of Debian packages you can read the following article [on git](https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md) or [in my personal website](https://www.senties-martinelli.com/articles/debian-packages).**
 
 
-`build-deb` is a program to easily create Debian packages for binaries or interpreted languages (Python, Bash, Perl, etc...). It will allow you to easily package your software without making custom scripts.
+`build-deb` is a program to easily create Debian packages for binaries or interpreted languages (Python, Bash, Perl, etc...). It will allow you to package your software without making custom scripts.
 
 
 ```
