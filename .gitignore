@@ -10,3 +10,8 @@ __pycache__/
 # Created with some program related to the PEP8
 #
 .cache
+
+# Extra
+#
+.project
+.idea/
