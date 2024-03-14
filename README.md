@@ -17,7 +17,7 @@ DESCRIPTION
        This  program  allows  you to create Debian packages for binaries or interpreted languages (Python, Bash, Perl.. etc..). You must keep in mind that this is only to create "basic" Debian
        packages, Debian Maintainers use more complicated tools like "dpkg-buildpackage" (You are able to use all the features of a Debian package like pre-installation scripts, etc..).
 
-       Nevertheless, this package will allow you to automatically sign your packages, and doing more complicated stuff with the magic of only one command.
+       Nevertheless, this package will allow you to automatically sign your packages, and do more complicated stuff with the magic of only one command.
 
 USAGE
        build-deb <first command> [Arguments..]
@@ -31,7 +31,7 @@ FIRST COMMAND
                              - Gzip manuals.
                              - Delete: *.pyc, *~ (backup files), and files placed in the root directory "/". It will also delete the ".git" folder.
                      Optional:
-                             - Sign the package (If you have a GPG key in your root key ring, and your email is in the maintainer filed)
+                             - Sign the package (If you have a GPG key in your root key ring, and your email is in the maintainer filled)
                              - Install the package (only for Debian Packages)
                              - Use Global Variables (To replace, the date, program version, etc.. )
                              - Fill the size of the package in the control file.
@@ -41,7 +41,7 @@ FIRST COMMAND
 
               <source folder>  can be either an absolute path or the name of a directory placed in the current working directory. The source folder must contain a  DEBIAN  STRUCTURE!  Tutorial: https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md
               *Note:  Since the program automatically rename the packages "program-name_program-version_architecture" the source
-              folder can contain a different name. This is pretty useful to create links outside the folder to prevent you from navigating trough the un-useful directories.
+              folder can contain a different name. This is pretty useful to create links outside the folder to prevent you from navigating through the un-useful directories.
 
               **To cancel the process use ctrl-c rather than closing the window.
        -c, --control
@@ -61,7 +61,7 @@ ARGUMENTS
        -drgv, --dont-replace-global-variables
               The program won't read the files in order to replace the global variables.
        -frepo, --force-reprepro
-              Force your package to enter to the reprepro repository, even if there is package with the same or a higher version.
+              Force your package to enter the reprepro repository, even if there is a package with the same or a higher version.
        -drepo, --dont-add-reprepro
               Ignore the copy changelog option of the options file.
        -dcpc, --dont-copy-changelog
@@ -92,7 +92,7 @@ CONTROL FILE
               If you set "Installed-Size: DEB_BUILDER_SIZE" in the control file, the size of the package will automatically be substituted.
 
 BUILD_DEB Options File
-       It is possible of using some more options and setting default arguments when building packages thanks to the BUILD_DEB file.
+       It is possible to use some more options and set default arguments when building packages thanks to the BUILD_DEB file.
               Some of the options are: Setting default arguments, adding the package to a reprepro repository, copying the changelog, changing the tar.gz location, etc..
        For more information generate a BUILD_DEB file "build-deb -o" and see its content
 

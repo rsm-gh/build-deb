@@ -6,15 +6,13 @@ and the parts [Getting the package's code](https://github.com/rsm-gh/build-deb/n
 
 
 ## PGP Signature
-Most of the GNU-Linux packages are Libre Software, and because of it
-anyone can take their source code, modify it with malicious code, and redistribute it. 
+Most of the GNU-Linux packages are Libre Software, and because of it, anyone can take their source code,
+modify it with malicious code, and redistribute it.
 PGP signatures are the method that maintainers and people use to trust the origin of a package.
 
-
-If you have already installed packages in GNU-Linux, you probably did it from a repository. When installing a packages
-from a repository the package manager automatically verifies the signatures.
-On the other hand, if you manually downloaded the package, the signature will not be checked, and it is then very important
-to do a manual verification.
+If you have already installed packages in GNU-Linux, you probably did it from a repository.
+When installing packages from a repository, the package manager automatically verifies the signatures.
+On the other hand, if you manually download the package, the signature will not be checked, and it is important to verify it.
 
 Here are the steps to verify the signature of a package:
 
@@ -25,15 +23,15 @@ Here are the steps to verify the signature of a package:
 
 
 ## Installation
-To install Debian packages it is necessary to use a package manager (Ex: from a root terminal use `dpkg -i /path/to/the/pacakge/`). 	
-In some distributions it's even possible to avoid using the terminal and just install them by double-left-clicking.
+To install Debian packages, it is necessary to use a package manager (Ex: from a root terminal use `dpkg -i /path/to/the/pacakge/`). 	
+In some distributions, it's even possible to avoid using the terminal and installing them by double-left-clicking.
 
-Personally, I rather doing the installation from the terminal because sometimes the packages display messages (errors, warnings, etc)
-that get hidden in graphical interfaces. It really depends of the distribution and the package manager, but in any case doing it
-from the terminal will always give you the maximum of information.
+Personally, I am rather doing the installation from the terminal because sometimes the packages display messages (errors, warnings, etc...)
+that get hidden in graphical interfaces. It really depends on the distribution and the package manager, but in any case, 
+doing it from the terminal will always give you the maximum of information.
 
-When doing a local installation (installing a package that does not comes from a repository), the dependencies are not automatically 
-installed. The terminal output is then like the following:
+When doing a local installation (installing a package that does not come from a repository), 
+the dependencies are not automatically installed. The terminal output is then like the following:
 
 ```bash
  root@debian:/home/user/Downloads# dpkg -i 1.6-7zRecover.deb
@@ -63,13 +61,13 @@ The steps for adding a repository are the following:
 ## Getting the package's code
 Debian packages are basically divided in two contents; the software's files and the information for the package manager.
       
-  + To obtain the software files it is only necessary to decompress the package with any decompression tool like `p7zip`, ex: `7z x /path/to/the/deb`.
+  + To obtain the software files, decompress the package with any decompression tool like `p7zip`, ex: `7z x /path/to/the/deb`.
   + To obtain the package manager information, it is necessary to use `dpkg`, ex:`dpkg -e /path/to/the/debian`.
-Some distributions allow to extract the package by doing `right-click > decompress` and sometimes even both parts are extracted.
+Some distributions allow extracting the package by doing `right-click > decompress` and sometimes even both parts are extracted.
 				
 ## How to build
 The right way of building a Debian package is by using `dpkg-buildpackage` but it may be a little bit complicated. Instead, it is possible to use `dpkg -b <folder>`
-These are the basics for creating Debian packages with `dpkg -b <folder path>` for any binary or interpreted language (Python, Bash, etc..):
+These are the basics for creating Debian packages with `dpkg -b <folder path>` for any binary or interpreted language (Python, Bash, etc...):
 		
 ### 1. Create a DEBIAN files & folders structure
 ```
@@ -84,12 +82,12 @@ ProgramName-Version/usr/bin/executable_script
 The folder structure will be the structure of the program once it's installed.            
   + Scripts placed at `/usr/bin/` are directly called from the terminal and their extension should not be added. This is the location where the main executable must be placed.
   + As a general rule, if the program has multiple files, they should be placed under `ProgramName-Version/usr/share/ProgramName/all the files`.
-For having more information about this you can read about the GNU/Linux structure since there are many locations for different stuff. For example, if the package is a python library, you will probably don't have a script in `usr/bin/` but instead the python module shall be added to `/usr/lib/pythonX.X/site-packages/python_module.py`.
+For having more information about this, you can read about the GNU/Linux structure since there are many locations for different stuff. For example, if the package is a python library, you will probably don't have a script in `usr/bin/` but instead the python module shall be added to `/usr/lib/pythonX.X/site-packages/python_module.py`.
 Some Remarks:
-  + It is possible to add pre-installation, post-installation, pre-removal scripts to the package. They only need to be added inside the `DEBIAN` folder with their respective name (`preinst`, `postinst`, `prerm`, etc..).
-  + For adding a graphical launcher (application icon) it is only necessary to create a `program_name.desktop` file into the applications folder `/usr/share/applications/` To figure out the content of the file, just sniff the files of the application directory of your system, you will probably find good examples.
+  + It is possible to add pre-installation, post-installation, pre-removal scripts to the package. They only need to be added inside the `DEBIAN` folder with their respective name (`preinst`, `postinst`, `prerm`, etc...).
+  + For adding a graphical launcher (application icon), create a `program_name.desktop` file into the applications folder `/usr/share/applications/` To figure out the content of the file, sniff the files of the application directory of your system, you will probably find good examples.
 ### 3. Fill the control file
-Here is an example of the control file. For creating it just paste the following text into an empty file: 
+Here is an example of the control file. For creating it, paste the following text into an empty file: 
 ```
 Package: ProgramName
 Version: VERSION
@@ -110,7 +108,9 @@ Description: Here you can put a one line description. This is the short Descript
   
 ### Bonus
 
-Doing all the previous steps, and filling the control file can become annoying and time consuming. That's why I created [build-deb](https://github.com/rsm-gh/build-deb). It allows to easily create and customize packages without doing any effort.
+Doing all the previous steps, and filling the control file can become annoying and time-consuming. 
+That's why I created [build-deb](https://github.com/rsm-gh/build-deb).
+It allows to easily create and customize packages without doing any effort.
 
 -----------
 -----------
