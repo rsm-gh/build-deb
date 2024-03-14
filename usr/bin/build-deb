@@ -128,8 +128,7 @@ else
             if [ -d "$local/$1" ]; then
                 path="$local/$1"
             else
-                echo -e "$RED ERROR,you need to enter the path of a directory. \n(Or its name if you are working in the current directory) $RESET"
-                echo "$1"
+                echo -e "$RED ERROR: Enter and absolute path or a directory, or its name if you are working in the current directory. $RESET"
                 exit 1
             fi
             
@@ -304,7 +303,7 @@ function sign_the_package {
                     fi
                 fi
             else
-                echo -e "$RED The root keyring do not contains the private key for $EMAIL.\n the package won't be signed.$RESET"
+                echo -e "$RED The root keyring do not contains the private key for '$EMAIL', the package won't be signed.$RESET"
             fi
         else
             echo -e "\n$RED The email is missing in the control file.$RESET"
