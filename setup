@@ -18,11 +18,11 @@
 
 
 #
-# Set the scripts permisions
+# Set the scripts permissions
 #
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-cd $DIR
+cd "$DIR" || (echo "problem in cd" && exit)
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root."
@@ -49,8 +49,8 @@ function install_files(){
     
     echo "installing: $1"
     
-    install -d $1
-    install -D $DIR$1/* $1
+    install -d "$1"
+    install -D "$DIR$1/*" "$1"
     
 }
 
