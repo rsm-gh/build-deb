@@ -84,8 +84,7 @@ function change_variables {
     esac
 }
 
-#
-#	Scan the arguments provided by the command line
+#   Scan the arguments provided by the command line
 #
 if [[ -z "$1" ]]; then
     echo "Invalid option. Use \"build-deb --help\""
@@ -145,7 +144,8 @@ else
     
     fi
     
-    #	Scan the arguments by skipping the first one..
+    #   Scan the arguments by skipping the first one..
+    #
     i=0
     for var in "$@"; do
         if [ "$i" -gt 0 ]; then
@@ -156,8 +156,8 @@ else
 fi
 
 function scan_build_deb_file {
-	#
-    #	Scan the arguments given in the BUILD_DEB file
+
+    #   Scan the arguments given in the BUILD_DEB file
     #
     if [ -f "$path/BUILD_DEB" ]; then
         
@@ -172,8 +172,8 @@ function scan_build_deb_file {
             fi
         done < "$path/BUILD_DEB"
         
-        
-        #	Check for the option "add to reprepro"
+        #   Check for the option "add to reprepro"
+        #
         if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
             repo_location=''
             repo_codename=''
@@ -212,6 +212,7 @@ function scan_build_deb_file {
         fi
 
         #   Check for the option "copy the changelog"
+        #
         if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
         
             while read -r LINE; do
@@ -242,7 +243,6 @@ function scan_build_deb_file {
             fi
         fi
 
-		#
         #   TarGz location
         #
         TarGzLocation=""
@@ -313,7 +313,7 @@ function sign_the_package {
 
 
 function clean_data {
-	#
+
     # Clean the data created by the program
     #
     echo -e "\n$BLUE Cleaning the current directory..$RESET"
@@ -332,6 +332,7 @@ function copy_changelog {
 function build_debian_package {
 
     # Remove the files of the root folder
+    #
     for file in "$path_dirname/$new_basename"_tmp/* ;do
         if [ -f "$file" ]; then
             rm -rf "$file"
@@ -340,6 +341,7 @@ function build_debian_package {
     done
 
     # Build the package
+    #
     echo -e "\n $BLUE Building $new_basename..$RESET"
     dpkg -b "$path"
     if ! [ -f "$path".deb ]; then
@@ -351,6 +353,7 @@ function build_debian_package {
     mv "$path".deb "$path_dirname"/"$new_basename".deb
     
     # Install the package
+    #
     if [ $DONT_INSTALL -eq 0 ]; then
         echo -e "\n$BLUE Installing the package..$RESET"
         dpkg -i "$path_dirname/$new_basename".deb
@@ -358,6 +361,7 @@ function build_debian_package {
     fi
     
     # Add the pacakge to reprepro
+    #
     if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
         echo -e "$BLUE Adding the package to the local repository $RESET"
         cd "$repo_location" || (echo "exit error because wrong path='$repo_location'" && exit)
@@ -385,12 +389,9 @@ function build_tg_package {
 
 if [ $BUILD -gt 0 ]; then
 
-
-    #############################
-    #                           #
-    #   Initialize the package  #
-    #                           #
-    #############################
+    #
+    # ------- [Initialize the package] ------- 
+    #
 
     if ! [ -f "$path/DEBIAN/control" ]; then
         echo -e "$RED The control file is missing.$RESET"
@@ -438,6 +439,7 @@ if [ $BUILD -gt 0 ]; then
     new_basename="$Control_Package_name"_"$Control_Version"_"$Control_Architecture"
     
     # Copy of the original folder (We work with a temporary folder, not with the original.)
+    #
     rsync -av --delete "$path/" "$path_dirname/$new_basename"_tmp > /dev/null
     path="$path_dirname/$new_basename"_tmp
     
@@ -448,22 +450,25 @@ if [ $BUILD -gt 0 ]; then
     fi
     cd "$path" || (echo "exit error because wrong path='$path'" && exit)
     
-    # change the folder permissions
+    # Change the folder permissions
+    #
     chown root:root -R "$path"
         
     
-    # remove the .git folder
+    # Remove the .git folder
+    #
     if [ -d "$path"/.git ]; then
         rm -rf "$path"/.git
         echo "Deleted: /.git"
     fi
 
 
-	#
-	# ------- [Modify the package] ------- 
-	#
+    #
+    # ------- [Modify the package] ------- 
+    #
 
-    # remove some possible existing data created by a previous build
+    # Remove some possible existing data created by a previous build
+    #
     if [ -f "/tmp/build_paths" ]; then
         rm -rf "/tmp/build_paths"
     fi
@@ -471,6 +476,7 @@ if [ $BUILD -gt 0 ]; then
     
     
     # Replace the global variables, change the files permissions and delete the backups
+    #
     current_year=$(date +"%Y")
     current_date_time=$(date)
     current_date=$(date +%Y-%m-%d)
@@ -534,6 +540,7 @@ if [ $BUILD -gt 0 ]; then
     
     
     # Replace the variables of the control file
+    #
     Folder_Size=$(du -sb "$path" | cut -f1)
     DEBIAN_Size=$(du -sb "$path/DEBIAN" | cut -f1)
     SIZE=$((Folder_Size-DEBIAN_Size))
@@ -543,9 +550,9 @@ if [ $BUILD -gt 0 ]; then
     echo " "
 
 
-	#
-	# ------- [Build] ------- 
-	#
+    #
+    # ------- [Build] ------- 
+    #
 
     if [ $BUILD -eq 1 ]; then # Debian Package
         build_debian_package
@@ -577,7 +584,7 @@ fi
 # ------- [Extra functions] ------- 
 #
 
-#
+
 # Help Message
 #
 if [ "$HELP" -eq 1 ]; then
@@ -624,7 +631,7 @@ if [ "$HELP" -eq 1 ]; then
 "
 fi
 
-#
+
 # Reprepro file (template)
 #
 if [ $OPTIONS_FILE -eq 1 ]; then
@@ -649,7 +656,7 @@ TarGzLocation:
 " > BUILD_DEB
 fi  
 
-#
+
 # Control file (template)
 #
 if [ $CONTROL_FILE_TEMPLATE -eq 1 ]; then
@@ -676,7 +683,7 @@ Description: Here you put a 1 line description, Less than 80 chars
     fi
 fi
 
-#
+
 # License text
 #
 if [ $LICENSE_DIALOG -eq 1 ]; then
