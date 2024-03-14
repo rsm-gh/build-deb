@@ -16,16 +16,10 @@
 #   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 
 
-
-    #########################################
-    #                                       #
-    #   Default Configuration:              #
-    #                                       #
-    #       You can modify this variables   #
-    #       to avoid using extra arguments  #
-    #                                       #
-    #########################################
-
+#
+# Default configuration that you may modify if you want to apply it
+# by default in all your builds.
+#
 
 DONT_INSTALL=0
 DONT_REPLACE_GLOBAL_VARIABLES=0
@@ -36,9 +30,10 @@ DONT_COPY_CHANGELOG=0
 DONT_SIGN=0
 DONT_SIGN_TG=0
 
+#
 # Program Variables ( They shouldn't be modified )
 #
-version=1.4~0
+version=1.4~1
 RED="\e[31m"        
 RESET="\e[0m"       
 BLUE="\e[94m"       
@@ -50,13 +45,9 @@ CONTROL_FILE_TEMPLATE=0
 HELP=0
 
 
-
-    #####################################
-    #                                   #
-    #   Scan the arguments              #
-    #                                   #
-    #####################################
-
+#
+# ------- [Scan the arguments] ------- 
+#
 
 function change_variables {
     case "$1" in
@@ -93,8 +84,8 @@ function change_variables {
     esac
 }
 
-
-# Scan the arguments given in the terminal
+#
+#	Scan the arguments provided by the command line
 #
 if [[ -z "$1" ]]; then
     echo "Invalid option. Use \"build-deb --help\""
@@ -138,7 +129,7 @@ else
                 path="$local/$1"
             else
                 echo -e "$RED ERROR,you need to enter the path of a directory. \n(Or its name if you are working in the current directory) $RESET"
-                echo "$user_path"
+                echo "$1"
                 exit 1
             fi
             
@@ -151,11 +142,11 @@ else
         
         path_dirname=$(dirname "$path")
         path_basename=$(basename "$path")   
-        cd "$path_dirname"
+        cd "$path_dirname" || (echo "exit error because wrong path='$path_dirname'" && exit)
     
     fi
     
-    # Scan the arguments by skiping the first one..
+    #	Scan the arguments by skipping the first one..
     i=0
     for var in "$@"; do
         if [ "$i" -gt 0 ]; then
@@ -166,15 +157,16 @@ else
 fi
 
 function scan_build_deb_file {
-    # Scan the arguments given in the BUILD_DEB file
+	#
+    #	Scan the arguments given in the BUILD_DEB file
     #
     if [ -f "$path/BUILD_DEB" ]; then
         
         #   Check for the option "arguments"
-        while read LINE; do
+        while read -r LINE; do
             if [[ "$LINE" == "Arguments"* ]] ; then
                 string=${LINE#*:}
-                args=(${string//,/ })
+                args=("${string//,/ }")
                 for i in "${args[@]}"; do
                     change_variables "$i"
                 done
@@ -182,12 +174,12 @@ function scan_build_deb_file {
         done < "$path/BUILD_DEB"
         
         
-        #   Check for the option "add to reprepro"
+        #	Check for the option "add to reprepro"
         if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
             repo_location=''
             repo_codename=''
         
-            while read LINE; do
+            while read -r LINE; do
                 if [[ "$LINE" == "RepositoryLocation"* ]] ; then
                     repo_location=${LINE#*:}
                 elif [[ "$LINE" == "CodeName"* ]] ; then
@@ -223,13 +215,13 @@ function scan_build_deb_file {
         #   Check for the option "copy the changelog"
         if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
         
-            while read LINE; do
+            while read -r LINE; do
                 if [[ "$LINE" == "CopyChangelog"* ]] ; then
                     changelog_dir_location=${LINE#*:}
                 fi
             done < "$path/BUILD_DEB"
                         
-            if ! [ -z "$changelog_dir_location" ]; then
+            if  [ -n "$changelog_dir_location" ]; then
             
                 changelog_path="$path_dirname"/"$path_basename"/usr/share/doc/"$Control_Package_name"/changelog
                 
@@ -238,7 +230,7 @@ function scan_build_deb_file {
                     echo "$changelog_path"
                     echo ""
                 elif [ -f "$changelog_path" ]; then
-                    changelog_file=$(cat $changelog_path)
+                    changelog_file=$(cat "$changelog_path")
                     DONT_COPY_CHANGELOG=0
                 else
                     DONT_COPY_CHANGELOG=1
@@ -251,16 +243,17 @@ function scan_build_deb_file {
             fi
         fi
 
+		#
         #   TarGz location
         #
         TarGzLocation=""
-        while read LINE; do
+        while read -r LINE; do
             if [[ "$LINE" == "TarGzLocation:"* ]] ; then
                 TarGzLocation=${LINE#*:}
             fi
         done < "$path/BUILD_DEB"
         
-        if ! [[ -z "$TarGzLocation" ]] && ! [ -d "$TarGzLocation" ]; then
+        if [[ -n "$TarGzLocation" ]] && ! [ -d "$TarGzLocation" ]; then
             echo -e "$RED The directory of the TarGz package doesn't exists. $RESET"
             echo "$TarGzLocation"
             exit
@@ -273,11 +266,9 @@ function scan_build_deb_file {
 }
 
 
-    #####################################
-    #                                   #
-    #   Do the work                     #
-    #                                   #
-    #####################################
+#
+# ------- [Build the package] ------- 
+#
 
 function sign_the_package {
     #
@@ -290,7 +281,7 @@ function sign_the_package {
         :
     else
         signed=0
-        while read LINE; do
+        while read -r LINE; do
            if [[ "$LINE" == *\<*\@*\>* ]] ; then
               signed=1
               EMAIL=${LINE%>*}
@@ -306,10 +297,10 @@ function sign_the_package {
                 if [ "$1" == "deb" ]; then
                     dpkg-sig -k "$EMAIL" --sign builder "$path_dirname/$new_basename".deb
                 else
-                    if ! [ -z "$TarGzLocation" ]; then
-                        gpg --local-user $EMAIL --detach --sign "$TarGzLocation/$new_basename".tar.gz
+                    if [ -n "$TarGzLocation" ]; then
+                        gpg --local-user "$EMAIL" --detach --sign "$TarGzLocation/$new_basename".tar.gz
                     else
-                        gpg --local-user $EMAIL --detach --sign "$path_dirname/$new_basename".tar.gz
+                        gpg --local-user "$EMAIL" --detach --sign "$path_dirname/$new_basename".tar.gz
                     fi
                 fi
             else
@@ -323,6 +314,7 @@ function sign_the_package {
 
 
 function clean_data {
+	#
     # Clean the data created by the program
     #
     echo -e "\n$BLUE Cleaning the current directory..$RESET"
@@ -332,7 +324,7 @@ function clean_data {
 
 function copy_changelog {
     if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
-        echo -e "\n$BLUE Copying the chagelog..$RESET"
+        echo -e "\n$BLUE Copying the changelog..$RESET"
         echo "$changelog_file" > "$changelog_dir_location"/"$new_basename".changelog
         echo -e " "
     fi
@@ -349,7 +341,6 @@ function build_debian_package {
     done
 
     # Build the package
-    #
     echo -e "\n $BLUE Building $new_basename..$RESET"
     dpkg -b "$path"
     if ! [ -f "$path".deb ]; then
@@ -360,9 +351,7 @@ function build_debian_package {
 
     mv "$path".deb "$path_dirname"/"$new_basename".deb
     
-    
     # Install the package
-    #
     if [ $DONT_INSTALL -eq 0 ]; then
         echo -e "\n$BLUE Installing the package..$RESET"
         dpkg -i "$path_dirname/$new_basename".deb
@@ -370,10 +359,9 @@ function build_debian_package {
     fi
     
     # Add the pacakge to reprepro
-    #
     if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
         echo -e "$BLUE Adding the package to the local repository $RESET"
-        cd "$repo_location"
+        cd "$repo_location" || (echo "exit error because wrong path='$repo_location'" && exit)
     
         if [ "$FORCE_REPREPRO" -eq 1 ]; then
             /usr/bin/reprepro remove "$repo_codename" "$Control_Package_name"
@@ -388,7 +376,7 @@ function build_debian_package {
 function build_tg_package {
     echo -e "$BLUE Compressing TarGz \"$new_basename\"..$RESET"
 
-    if ! [ -z "$TarGzLocation" ]; then
+    if [ -n "$TarGzLocation" ]; then
         tar -pczf "$TarGzLocation/$new_basename".tar.gz -C "$path" .
     else
         tar -pczf "$path_dirname/$new_basename".tar.gz -C "$path" . 
@@ -417,7 +405,7 @@ if [ $BUILD -gt 0 ]; then
     Control_Architecture=""
     TarGzLocation=""
         
-    while read LINE; do
+    while read -r LINE; do
         if [[ "$LINE" == *"Version:"* ]] ; then
             Control_Version=$(echo "$LINE" | sed 's/^.*Version://')
             Control_Version=${Control_Version// /}
@@ -451,7 +439,6 @@ if [ $BUILD -gt 0 ]; then
     new_basename="$Control_Package_name"_"$Control_Version"_"$Control_Architecture"
     
     # Copy of the original folder (We work with a temporary folder, not with the original.)
-    #
     rsync -av --delete "$path/" "$path_dirname/$new_basename"_tmp > /dev/null
     path="$path_dirname/$new_basename"_tmp
     
@@ -460,41 +447,36 @@ if [ $BUILD -gt 0 ]; then
         echo "$path"
         exit
     fi
-    cd "$path"
+    cd "$path" || (echo "exit error because wrong path='$path'" && exit)
     
     # change the folder permissions
-    #
     chown root:root -R "$path"
         
     
     # remove the .git folder
-    #
     if [ -d "$path"/.git ]; then
         rm -rf "$path"/.git
         echo "Deleted: /.git"
     fi
 
-    #############################
-    #                           #
-    #   Modify the package      #
-    #                           #
-    #############################
+
+	#
+	# ------- [Modify the package] ------- 
+	#
 
     # remove some possible existing data created by a previous build
-    #
     if [ -f "/tmp/build_paths" ]; then
         rm -rf "/tmp/build_paths"
     fi
-    find $PWD > "/tmp/build_paths"
+    find "$PWD" > "/tmp/build_paths"
     
     
     # Replace the global variables, change the files permissions and delete the backups
-    #
     current_year=$(date +"%Y")
     current_date_time=$(date)
     current_date=$(date +%Y-%m-%d)
     
-    while read LINE; do
+    while read -r LINE; do
         if [ -f "$LINE" ]; then
             
             mimetype=$(file --mime-type "$LINE")
@@ -553,9 +535,8 @@ if [ $BUILD -gt 0 ]; then
     
     
     # Replace the variables of the control file
-    #
-    Folder_Size=$(du -sb $path | cut -f1)
-    DEBIAN_Size=$(du -sb $path/DEBIAN | cut -f1)
+    Folder_Size=$(du -sb "$path" | cut -f1)
+    DEBIAN_Size=$(du -sb "$path/DEBIAN" | cut -f1)
     SIZE=$((Folder_Size-DEBIAN_Size))
     SIZE=$((SIZE/1000))
     echo -e "\n$BLUE Installed Program Size: $SIZE kB $RESET"
@@ -563,11 +544,9 @@ if [ $BUILD -gt 0 ]; then
     echo " "
 
 
-    #############################
-    #                           #
-    #   Build                   #
-    #                           #
-    #############################
+	#
+	# ------- [Build] ------- 
+	#
 
     if [ $BUILD -eq 1 ]; then # Debian Package
         build_debian_package
@@ -595,13 +574,12 @@ if [ $BUILD -gt 0 ]; then
     fi
 fi
 
-    #####################################
-    #                                   #
-    #   Extra Functions                 #
-    #                                   #
-    #####################################
+#
+# ------- [Extra functions] ------- 
+#
 
-# help message
+#
+# Help Message
 #
 if [ "$HELP" -eq 1 ]; then
     echo "
@@ -617,7 +595,7 @@ if [ "$HELP" -eq 1 ]; then
     -o,     --options   Template of the options file.
 
     -h,     -help       Display this dialog.
-    -v, --version   Display the current version.
+    -v,     --version   Display the current version.
     -l,     --license   Display the license.
     
  Arguments:
@@ -647,7 +625,8 @@ if [ "$HELP" -eq 1 ]; then
 "
 fi
 
-# reprepro file (template)
+#
+# Reprepro file (template)
 #
 if [ $OPTIONS_FILE -eq 1 ]; then
     echo "
@@ -671,7 +650,8 @@ TarGzLocation:
 " > BUILD_DEB
 fi  
 
-# control file (template)
+#
+# Control file (template)
 #
 if [ $CONTROL_FILE_TEMPLATE -eq 1 ]; then
     if ! [ -d DEBIAN ]; then
@@ -697,8 +677,9 @@ Description: Here you put a 1 line description, Less than 80 chars
     fi
 fi
 
-
-
+#
+# License text
+#
 if [ $LICENSE_DIALOG -eq 1 ]; then
     echo "
 Copyright (C) 2014-2016  Rafael Senties Martinelli 
