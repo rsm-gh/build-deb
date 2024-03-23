@@ -1,9 +1,3 @@
-`build-deb` is a program to easily create Debian packages for binaries or interpreted languages 
-(Python, Bash, Perl, etc...) and it allows packaging software without making custom scripts.
-
-If you want to know more about Debian packages,
-I advise you to read the following [article](https://www.senties-martinelli.com/articles/debian-packages).
-
 ```
 build-deb(8)                                                                         System Manager's Manual                                                                         build-deb(8)
 
