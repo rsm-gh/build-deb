@@ -11,13 +11,12 @@ DESCRIPTION
        This   program   allows  to  create Debian packages for binaries or in‐
        terpreted languages (Python, Bash, Perl.. etc..). You must keep in mind
        that  it  is only to  create  "basic"  Debian  packages, because Debian 
-       Maintainers use more complicated tools like "dpkg-buildpackage", but you
-       will still be able to use all the features of a Debian package, like 
+       Maintainers use  more  complicated  tools  like "dpkg-buildpackage", but 
+       you will still be able to use all the features of a Debian package, like 
        pre or post installation scripts...
 
-       Nevertheless, this package will allow you to  automatically  sign  your
-       packages, and do more complicated stuff with the magic of only one com‐
-       mand.
+       Also, this package will allow you to  automatically  sign your packages, 
+       and do more complicated stuff with the magic of only one command.
 
 USAGE
        build-deb <first command> [Arguments..]

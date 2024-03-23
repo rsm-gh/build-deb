@@ -10,6 +10,6 @@ Homepage: https://github.com/rsm-gh/build-deb
 Description: Debian package builder for binaries or interpreted languages (Python, Bash, Pearl, etc..).
  This program allows to create Debian packages for binaries or interpreted languages (Python, Bash, Perl.. etc..). You must keep in mind that it is only to create "basic" Debian packages, because Debian Maintainers use more complicated tools like "dpkg-buildpackage", but you will still be able to use all the features of a Debian package, like pre or post installation scripts...
  .
- Nevertheless, this package will allow you to automatically sign your packages, and do more complicated stuff with the magic of only one command.
+ Also, this package will allow you to automatically sign your packages, and do more complicated stuff with the magic of only one command.
  .
  More information at https://github.com/rsm-gh/build-deb
