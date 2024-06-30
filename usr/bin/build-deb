@@ -63,13 +63,13 @@ function change_variables {
         -frepo|--force-reprepro)
             FORCE_REPREPRO=1
     ;;
-        -drepo| --dont-add-reprepro)
+        -drepo|--dont-add-reprepro)
             DONT_ADD_TO_REPREPRO=1
     ;;
-        -ds| --dont-sign)
+        -ds|--dont-sign)
             DONT_SIGN=1
     ;;
-        -ds-tg| --dont-sign-targz)
+        -ds-tg|--dont-sign-targz)
             DONT_SIGN_TG=1                          
     ;;
         -tg|--targz)
