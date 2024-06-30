@@ -61,35 +61,48 @@ FIRST COMMAND
 
               **To  cancel the process use ctrl-c rather than closing the win‐
               dow.
+              
        -c, --control
               Create a DEBIAN folder with a template of the control file.
-       -o,--options
+              
+       -o, --options
               Template of the options file.
-       -h, -help
+              
+       -h, --help
               Display the help dialog.
-       -v,--version
+              
+       -v, --version
               Display your current build-deb version.
+              
        -l, --license
               Display the license.
 ARGUMENTS
        -di, --dont-install
               After building the package, do not install it.
+              
        -drgv, --dont-replace-global-variables
               The program won't read the files in order to replace the  global
               variables.
+              
        -frepo, --force-reprepro
               Force  your  package  to  enter the reprepro repository, even if
               there is a package with the same or a higher version.
+              
        -drepo, --dont-add-reprepro
               Ignore the copy changelog option of the options file.
+              
        -dcpc, --dont-copy-changelog
               Ignore the copy changelog option of the options file.
+              
        -ds, --dont-sign
               Do not sign the package.
+              
        -ds-tg, --dont-sign-targz
               Do not sign TarGz packages
-       -tg, -targz
+              
+       -tg, --targz
               Create a tar.gz archive instead of the .deb
+              
        -deb-tg,  --debian-targz
               Create a Debian and a TarGz Package
 
@@ -99,10 +112,13 @@ GLOBAL VARIABLES
 
        DEB_BUILDER_VERSION
               Value of the version field of the control file.
+              
        DEB_BUILDER_DATE_TIME
               Format: Sat Jan 10 16:32:30 CET 2015
+              
        DEB_BUILDER_YEAR
               Format: 2015
+              
        DEB_BUILDER_DATE
               Format: Year-Month-Day
 
