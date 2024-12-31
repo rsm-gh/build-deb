@@ -636,21 +636,21 @@ fi
 #
 if [ $OPTIONS_FILE -eq 1 ]; then
     echo "
-#   This is a build-deb Configuration file. 
-#   With this file you can customize the way of building packages. If you let an option
-#   empty, it won't be used.    
+# This is a build-deb Configuration file.
+# This file customizes the way of building packages.
+# Empty options are ignored.
 
 # Default arguments separated by commas 
 Arguments:
 
-# This is to add your package to a reprepro repository
+# Add the package to a reprepro repository
 RepositoryLocation:
 CodeName:
 
-# You can copy the changelog of your program somewhere
+# Copy the changelog somewhere
 CopyChangelog:
 
-# Default folder when creating targz packages
+# Destination folder when creating Tar.gz packages
 TarGzLocation:
 
 " > BUILD_DEB
