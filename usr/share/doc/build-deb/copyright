@@ -8,8 +8,8 @@ License: CC BY 4.0
 Files: DEBIAN_BASICS.md
 
 
-Copyright: Copyright (C) 2014-2016, 2019 Rafael Senties Martinelli
-License: GPL-3+
+Copyright: Copyright (C) 2014-2016 Rafael Senties Martinelli
+License: GPLv3
 Files:
 	README.md
 	remove
@@ -20,7 +20,7 @@ Files:
 
 
 
-License: GPL-3+
+License: GPLv3
 GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
