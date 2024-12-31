@@ -2,146 +2,141 @@
                              System Manager's Manual           
 
 NAME
-        build-deb - Easy Debian/Tar.Gz package builder.
+       build-deb - Easy Debian and Tar.gz package builder.
 
 HOME
-        https://github.com/rsm-gh/build-deb
+       https://github.com/rsm-gh/build-deb
 
 DESCRIPTION
-       This   program   allows  to  create Debian packages for binaries or in‐
-       terpreted languages (Python, Bash, Perl.. etc..). You must keep in mind
-       that  it  is only to  create  "basic"  Debian  packages, because Debian 
-       Maintainers use  more  complicated  tools  like "dpkg-buildpackage", but 
-       you will still be able to use all the features of a Debian package, like 
-       pre or post installation scripts...
+       This program facilitates the creation of Debian packages for binaries or in‐
+       terpreted languages such as Python, Bash, or Perl. It is designed for creat‐
+       ing  "basic"  Debian  packages and does not replace more advanced tools like
+       "dpkg-buildpackage." Nevertheless, it allows the use of features  like  pre-
+       installation or post-installation scripts.
 
-       Also, this package will allow you to  automatically  sign your packages, 
-       and do more complicated stuff with the magic of only one command.
+       Additionally, build-deb can automatically sign packages and perform more ad‐
+       vanced tasks with a single command.
 
 USAGE
-       build-deb <first command> [Arguments..]
+       build-deb <command> [arguments]
 
-FIRST COMMAND
+COMMANDS
        <folder>
-              By default, if you only enter the <source folder> field  without
-              any other option, It will build a Debian Package.
+              This  command  will build a Debian package, and it can be filled with
+              an absolute path or with a folder name of the current working  direc‐
+              tory. The folder must have a valid Debian structure.
 
-                     The program will:
-                             -  Change  the  executable  permissions to: Bash,
-                            Python, Perl, and Ruby scripts, and  to   binaries
-                            with   the   mime-type  :  x-executable  or octet-
-                            stream.
-                             - Gzip manuals.
-                             - Delete: *.pyc, *~  (backup  files),  and  files
-                            placed  in  the  root  directory "/". It will also
-                            delete the ".git" folder.
-                     Optional:
-                             - Sign the package (If you have a GPG key in your
-                            root key ring, and your email is in the maintainer
-                            filled)
-                             - Install the package (only for Debian Packages)
-                             - Use Global Variables  (To  replace,  the  date,
-                            program version, etc.. )
-                             -  Fill  the  size  of the package in the control
-                            file.
-                             - Add your package to  your  reprepro  repository
-                            (only for Debian Packages)
-                             - Copy the changelog somewhere.
-                             - and more..
+              For   more  details  about  the  folder  structure,  you  can  visit:
+              https://www.senties-martinelli.com/articles/debian-packages#build
 
-              <source folder>  can be either an absolute path or the name of a
-              directory placed in the current working  directory.  The  source
-              folder    must    contain    a   DEBIAN   STRUCTURE!   Tutorial:
-              https://github.com/rsm-gh/build-deb/blob/master/DEBIAN_BASICS.md
-              *Note: Since the program automatically rename the packages "pro‐
-              gram-name_program-version_architecture" your source  folder  can
-              contain  a different name. This is pretty useful to create links
-              outside the folder to prevent you from  navigating  through  the
-              un-useful directories.
+              Default:
+                     - Set executable permissions for Bash, Python, Perl, and  Ruby
+                     scripts,  and  binaries with MIME types such as "x-executable"
+                     or "octet-stream".
 
-              **To  cancel the process use ctrl-c rather than closing the win‐
-              dow.
-              
+                     - Compress manuals using gzip.
+
+                     - Remove unnecessary files, such as *.pyc, backup files (*~),
+                     and files in the root directory ("/"). The ".git" folder will
+                     also be removed.
+
+              Optional:
+                     - Sign the package (if a GPG key is available  and  the  main‐
+                     tainer email is specified).
+
+                     - Install the package (for Debian packages).
+
+                     - Replace global variables (e.g., date, program version).
+
+                     - Calculate and include the package size in the control file.
+
+                     - Add the package to a reprepro repository (for Debian pack‐
+                     ages).
+
+                     - Copy the changelog to a specified location.
+
+              *Note:  The  program  automatically renames packages using the format
+              "program-name_program-version_architecture,"  so  the  source  folder
+              name can differ. This allows to use symbolic links outside the folder
+              to simplify navigation.
+
+              **To cancel the process, use Ctrl-C rather than closing the window.
+
        -c, --control
-              Create a DEBIAN folder with a template of the control file.
-              
+              Create a DEBIAN folder with a control file template.
+
        -o, --options
-              Template of the options file.
-              
+              Generate a template for the options file.
+
        -h, --help
               Display the help dialog.
-              
+
        -v, --version
-              Display your current build-deb version.
-              
+              Display the current build-deb version.
+
        -l, --license
-              Display the license.
+              Display the license information.
+
 ARGUMENTS
        -di, --dont-install
-              After building the package, do not install it.
-              
+              Skip installing the package after building.
+
        -drgv, --dont-replace-global-variables
-              The program won't read the files in order to replace the  global
-              variables.
-              
+              Skip replacing global variables in the files.
+
        -frepo, --force-reprepro
-              Force  your  package  to  enter the reprepro repository, even if
-              there is a package with the same or a higher version.
-              
+              Force  the  package to be added to the reprepro repository, even if a
+              package with the same or higher version exists.
+
        -drepo, --dont-add-reprepro
-              Ignore the copy changelog option of the options file.
-              
+              Do not add the package to the reprepro repository.
+
        -dcpc, --dont-copy-changelog
-              Ignore the copy changelog option of the options file.
-              
+              Do not copy the changelog as specified in the options file.
+
        -ds, --dont-sign
               Do not sign the package.
-              
+
        -ds-tg, --dont-sign-targz
-              Do not sign TarGz packages
-              
+              Do not sign Tar.gz packages.
+
        -tg, --targz
-              Create a tar.gz archive instead of the .deb
-              
-       -deb-tg,  --debian-targz
-              Create a Debian and a TarGz Package
+              Create a Tar.gz archive instead of a .deb package.
+
+       -deb-tg, --debian-targz
+              Create both Debian and Tar.gz packages.
 
 GLOBAL VARIABLES
-       By default the program will read your files to try to find  the  Global
-       Variables and replace them with the right value. (This can be skipped)
+       By default, build-deb read the files to identify and replace global vari‐
+       ables with appropriate values. To disable this feature use "-drgv".
 
        DEB_BUILDER_VERSION
-              Value of the version field of the control file.
-              
+              Represents the version field in the control file.
+
        DEB_BUILDER_DATE_TIME
               Format: Sat Jan 10 16:32:30 CET 2015
-              
+
        DEB_BUILDER_YEAR
               Format: 2015
-              
+
        DEB_BUILDER_DATE
               Format: Year-Month-Day
 
 CONTROL FILE
        Installed-Size
-              If  you  set  "Installed-Size:  DEB_BUILDER_SIZE" in the control
-              file, the size of the  package  will  automatically  be  substi‐
-              tuted.
+              Specifying "Installed-Size: DEB_BUILDER_SIZE" in  the  control  file,
+              the program will automatically calculate and insert the package size.
 
-BUILD_DEB Options File
-       It  is possible to use some more options and set default arguments when
-       building packages thanks to the BUILD_DEB file.
-              Some of the options are: Setting default arguments,  adding  the
-              package  to a reprepro repository, copying the changelog, chang‐
-              ing the tar.gz location, etc..
-       For more information generate a BUILD_DEB file "build-deb -o"  and  see
-       its content
+OPTIONS FILE
+       The options file allows to define de build arguments and to include some ad‐
+       ditional  options. For more details generate a BUILD_DEB file "build-deb -o"
+       and review its contents.
 
 EXAMPLES
        build-deb program_source --targz --dont-replace-global-variables
-       Will  create  a  tar.gz  package from a folder in the current directory
-       called "program_source". The program will also  skip  replacing  global
-       variables.
+              Will create a Tar.gz package from the "program_source" folder in  the
+              current  directory  and  it will skip replacing the global variables.
+              This is how this package is created.
 
 Written by Rafael Senties Martinelli       29 April 2015
 ```
