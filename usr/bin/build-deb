@@ -33,7 +33,7 @@ DONT_SIGN_TG=0
 #
 # Program Variables ( They shouldn't be modified )
 #
-version=1.5.1
+VERSION=1.6.0
 RED="\e[31m"        
 RESET="\e[0m"       
 BLUE="\e[94m"       
@@ -109,7 +109,7 @@ else
                 HELP=1
         ;;
             -v|--version)
-                echo "Version $version"
+                echo "Version $VERSION"
         ;;
             -c|--control)
                 CONTROL_FILE_TEMPLATE=1
