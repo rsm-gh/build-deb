@@ -670,7 +670,7 @@ if [ $CONTROL_FILE_TEMPLATE -eq 1 ]; then
 Version:
 Architecture:
 Maintainer: name <email>
-Depends: prog1, prog2, etc,
+Depends: prog1, prog2 (>=2.0), etc,
 Installed-Size: DEB_BUILDER_SIZE
 Section: Extras
 Priority: Optional
