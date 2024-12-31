@@ -336,7 +336,7 @@ function build_debian_package {
     for file in "$path_dirname/$new_basename"_tmp/* ;do
         if [ -f "$file" ]; then
             rm -rf "$file"
-            echo "Deleted: ${file#$path}"
+            echo "Deleted: ${file#"$path"}"
         fi
     done
 
@@ -485,7 +485,7 @@ if [ $BUILD -gt 0 ]; then
         if [ -f "$LINE" ]; then
             
             mimetype=$(file --mime-type "$LINE")
-            local_path=${LINE#$path}
+            local_path=${LINE#"$path"}
             base_name=${LINE##*/}
             
             if [ "$DONT_REPLACE_GLOBAL_VARIABLES" -eq 0 ]; then
@@ -590,7 +590,7 @@ fi
 if [ "$HELP" -eq 1 ]; then
     echo "
  Usage:
-    build-deb [Command] [Arguments..]
+    build-deb <Command> [Arguments...]
             
  Command:
     
