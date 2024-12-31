@@ -20,14 +20,14 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-if [ -d /usr/share/vlist-player ]; then
+if [ -d /usr/share/build-deb ]; then
 	rm -rf /usr/bin/build-deb
 fi
 
-if [ -d /usr/share/doc/vlist-player ]; then
+if [ -d /usr/share/doc/build-deb ]; then
 	rm -rf /usr/share/doc/build-deb
 fi
 
 if [ "$1" != "-s" ]; then
-	echo "The removal is complete."
+	echo "The uninstall is complete."
 fi
