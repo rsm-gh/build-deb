@@ -124,8 +124,8 @@ GLOBAL VARIABLES
 
 CONTROL FILE
        Installed-Size
-              Specifying "Installed-Size: DEB_BUILDER_SIZE" in  the  control  file,
-              the program will automatically calculate and insert the package size.
+              Specifying "Installed-Size: DEB_BUILDER_SIZE" in the control file au‐
+              tomatically calculate and fill the package size.
 
 OPTIONS FILE
        The options file allows to define de build arguments and to include some ad‐
