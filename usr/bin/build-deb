@@ -590,9 +590,9 @@ fi
 if [ "$HELP" -eq 1 ]; then
     echo "
  Usage:
-    build-deb [First Command] [Arguments..]
+    build-deb [Command] [Arguments..]
             
- First Command:
+ Command:
     
     <source folder> Folder containing a DEBIAN structure.
             *By default it builds a Debian Package.
