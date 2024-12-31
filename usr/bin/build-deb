@@ -342,10 +342,10 @@ function build_debian_package {
 
     # Build the package
     #
-    echo -e "\n $BLUE Building $new_basename..$RESET"
+    echo -e "\n$BLUE Building $new_basename..$RESET"
     dpkg -b "$path"
     if ! [ -f "$path".deb ]; then
-        echo -e "\n $RED The deb package is missing! the program will exit.$RESET"
+        echo -e "\n$RED The deb package is missing! the program will exit.$RESET"
         rm -rf "$path"
         exit 1
     fi
