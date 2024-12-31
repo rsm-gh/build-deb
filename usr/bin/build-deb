@@ -33,7 +33,7 @@ DONT_SIGN_TG=0
 #
 # Program Variables ( They shouldn't be modified )
 #
-version=1.5
+version=1.5.1
 RED="\e[31m"        
 RESET="\e[0m"       
 BLUE="\e[94m"       
