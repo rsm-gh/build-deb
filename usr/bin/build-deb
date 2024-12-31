@@ -600,7 +600,7 @@ if [ "$HELP" -eq 1 ]; then
     -c,     --control   Template of the control file.
     -o,     --options   Template of the options file.
 
-    -h,     -help       Display this dialog.
+    -h,     --help      Display this dialog.
     -v,     --version   Display the current version.
     -l,     --license   Display the license.
     
@@ -618,10 +618,10 @@ if [ "$HELP" -eq 1 ]; then
     
  Global Variables:
 
-    DEB_BUILDER_VERSION Value of the Version field of the control file. 
-    DEB_BUILDER_DATE_TIME   Format: \"Sat Jan 10 16:32:30 CET 2015\"
-    DEB_BUILDER_YEAR    Format: \"2015\"
-    DEB_BUILDER_DATE    Format: \"Year-Month-Day\"
+    DEB_BUILDER_VERSION      Value of the Version field of the control file.
+    DEB_BUILDER_DATE_TIME    Format: \"Sat Jan 10 16:32:30 CET 2015\"
+    DEB_BUILDER_YEAR         Format: \"2015\"
+    DEB_BUILDER_DATE         Format: \"Year-Month-Day\"
     
     
  Control File:

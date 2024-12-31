@@ -11,7 +11,7 @@ HOME
        https://github.com/rsm-gh/build-deb
 
 DESCRIPTION
-       This program facilitates the creation of Debian packages for binaries or in‐
+       This script facilitates the creation of Debian packages for binaries or in‐
        terpreted languages such as Python, Bash, or Perl. It is designed for creat‐
        ing  "basic"  Debian  packages and does not replace more advanced tools like
        "dpkg-buildpackage." Nevertheless, it allows the use of features  like  pre-
@@ -33,32 +33,32 @@ COMMANDS
               https://www.senties-martinelli.com/articles/debian-packages#build
 
               Default:
-                     - Set executable permissions for Bash, Python, Perl, and  Ruby
+                     • Set executable permissions for Bash, Python, Perl, and  Ruby
                      scripts,  and  binaries with MIME types such as "x-executable"
                      or "octet-stream".
 
-                     - Compress manuals using gzip.
+                     • Compress manuals using gzip.
 
-                     - Remove unnecessary files, such as *.pyc, backup files (*~),
+                     • Remove unnecessary files, such as *.pyc, backup files (*~),
                      and files in the root directory ("/"). The ".git" folder will
                      also be removed.
 
               Optional:
-                     - Sign the package (if a GPG key is available  and  the  main‐
+                     • Sign the package (if a GPG key is available  and  the  main‐
                      tainer email is specified).
 
-                     - Install the package (for Debian packages).
+                     • Install the package (for Debian packages).
 
-                     - Replace global variables (e.g., date, program version).
+                     • Replace global variables (e.g., date, program version).
 
-                     - Calculate and include the package size in the control file.
+                     • Calculate and include the package size in the control file.
 
-                     - Add the package to a reprepro repository (for Debian pack‐
+                     • Add the package to a reprepro repository (for Debian pack‐
                      ages).
 
-                     - Copy the changelog to a specified location.
+                     • Copy the changelog to a specified location.
 
-              *Note:  The  program  automatically renames packages using the format
+              *The  program  automatically  renames  packages   using   the  format
               "program-name_program-version_architecture,"  so  the  source  folder
               name can differ. This allows to use symbolic links outside the folder
               to simplify navigation.

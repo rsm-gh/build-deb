@@ -4,7 +4,7 @@ build-deb - Easy Debian and Tar.gz package builder.
 .SH HOME
 https://github.com/rsm-gh/build-deb
 .SH DESCRIPTION
-This program facilitates the creation of Debian packages for binaries or interpreted languages such as Python, Bash, or Perl. It is designed for creating "basic" Debian packages and does not replace more advanced tools like "dpkg-buildpackage." Nevertheless, it allows the use of features like pre-installation or post-installation scripts.
+This script facilitates the creation of Debian packages for binaries or interpreted languages such as Python, Bash, or Perl. It is designed for creating "basic" Debian packages and does not replace more advanced tools like "dpkg-buildpackage." Nevertheless, it allows the use of features like pre-installation or post-installation scripts.
 .LP
 Additionally, build-deb can automatically sign packages and perform more advanced tasks with a single command.
 .SH USAGE
@@ -21,29 +21,29 @@ For more details about the folder structure, you can visit: https://www.senties-
 .LP
 Default:
 .RS
-- Set executable permissions for Bash, Python, Perl, and Ruby scripts, and binaries with MIME types such as "x-executable" or "octet-stream".
+• Set executable permissions for Bash, Python, Perl, and Ruby scripts, and binaries with MIME types such as "x-executable" or "octet-stream".
 .TP
-- Compress manuals using gzip.
+• Compress manuals using gzip.
 .TP
-- Remove unnecessary files, such as *.pyc, backup files (*~), and files in the root directory ("/"). The ".git" folder will also be removed.
+• Remove unnecessary files, such as *.pyc, backup files (*~), and files in the root directory ("/"). The ".git" folder will also be removed.
 .RE
 .TP
 Optional:
 .RS
-- Sign the package (if a GPG key is available and the maintainer email is specified).
+• Sign the package (if a GPG key is available and the maintainer email is specified).
 .TP
-- Install the package (for Debian packages).
+• Install the package (for Debian packages).
 .TP
-- Replace global variables (e.g., date, program version).
+• Replace global variables (e.g., date, program version).
 .TP
-- Calculate and include the package size in the control file.
+• Calculate and include the package size in the control file.
 .TP
-- Add the package to a reprepro repository (for Debian packages).
+• Add the package to a reprepro repository (for Debian packages).
 .TP
-- Copy the changelog to a specified location.
+• Copy the changelog to a specified location.
 .RE
 .LP
-*Note: The program automatically renames packages using the format "program-name_program-version_architecture," so the source folder name can differ. This allows to use symbolic links outside the folder to simplify navigation.
+*The program automatically renames packages using the format "program-name_program-version_architecture," so the source folder name can differ. This allows to use symbolic links outside the folder to simplify navigation.
 .LP
 **To cancel the process, use Ctrl-C rather than closing the window.
 .RE
