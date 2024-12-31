@@ -1,5 +1,5 @@
 Package: build-deb
-Version: 1.5
+Version: 1.5.1
 Architecture: all
 Maintainer: Rafael Senties Martinelli <rafael@senties-martinelli.com>
 Depends: dpkg
@@ -8,8 +8,8 @@ Section: Development
 Priority: Optional
 Homepage: https://github.com/rsm-gh/build-deb
 Description: Debian package builder for binaries or interpreted languages (Python, Bash, Pearl, etc..).
- This program allows to create Debian packages for binaries or interpreted languages (Python, Bash, Perl.. etc..). You must keep in mind that it is only to create "basic" Debian packages, because Debian Maintainers use more complicated tools like "dpkg-buildpackage", but you will still be able to use all the features of a Debian package, like pre or post installation scripts...
+ This program facilitates the creation of Debian packages for binaries or interpreted languages such as Python, Bash, or Perl. It is designed for creating  "basic"  Debian  packages and does not replace more advanced tools like "dpkg-buildpackage." Nevertheless, it allows the use of features  like  pre-installation or post-installation scripts.
  .
- Also, this package will allow you to automatically sign your packages, and do more complicated stuff with the magic of only one command.
+ Additionally, build-deb can automatically sign packages and perform more advanced tasks with a single command.
  .
  More information at https://github.com/rsm-gh/build-deb
