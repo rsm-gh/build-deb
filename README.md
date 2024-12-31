@@ -1,3 +1,6 @@
+
+## Manual
+
 ```
                              System Manager's Manual           
 
@@ -139,4 +142,41 @@ EXAMPLES
               This is how this package is created.
 
 Written by Rafael Senties Martinelli       29 April 2015
+```
+
+## Example
+
+The Debian package of build-deb, is build using the tool itself, the terminal looks like the following:
+```bash
+root@linux:/home/cadweb/Software# build-deb build-deb -drgv
+
+ Initializing the package.. 
+Deleted: /.git
+Gzip: /usr/share/man/man8/build-deb.8
+0755: /usr/bin/build-deb
+0755: /remove
+0755: /setup
+
+ Installed Program Size: 120 kB 
+Deleted: /DEBIAN_BASICS.md
+Deleted: /LICENSE
+Deleted: /README.md
+Deleted: /remove
+Deleted: /setup
+
+ Building build-deb_1.5.1_all..
+dpkg-deb: building package 'build-deb' in '/home/cadweb/Software/build-deb_1.5.1_all_tmp.deb'.
+
+ Installing the package..
+(Reading database ... 176254 files and directories currently installed.)
+Preparing to unpack .../build-deb_1.5.1_all.deb ...
+Unpacking build-deb (1.5.1) over (1.5.1) ...
+Setting up build-deb (1.5.1) ...
+Processing triggers for man-db (2.13.0-1) ...
+ 
+
+ Email found in the control file,
+ The root keyring do not contains the private key for 'rafael@senties-martinelli.com', the package won't be signed.
+
+ Cleaning the current directory..
 ```
