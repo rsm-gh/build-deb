@@ -82,32 +82,32 @@ COMMANDS
 
 ARGUMENTS
        -di, --dont-install
-              Skip installing the package after building.
+                Skip installing the package after building.
 
        -drgv, --dont-replace-global-variables
-              Skip replacing global variables in the files.
+                Skip replacing global variables in the files.
 
        -frepo, --force-reprepro
-              Force  the  package to be added to the reprepro repository, even if a
-              package with the same or higher version exists.
+                Force  the  package to be added to the reprepro repository, even if a
+                package with the same or higher version exists.
 
        -drepo, --dont-add-reprepro
-              Do not add the package to the reprepro repository.
+                Do not add the package to the reprepro repository.
 
        -dcpc, --dont-copy-changelog
-              Do not copy the changelog as specified in the options file.
+                Do not copy the changelog as specified in the options file.
 
        -ds, --dont-sign
-              Do not sign the package.
+                Do not sign the package.
 
-       -ds-tg, --dont-sign-targz
-              Do not sign Tar.gz packages.
+       -ds-tgz, --dont-sign-targz
+                Do not sign Tar.gz packages.
 
-       -tg, --targz
-              Create a Tar.gz archive instead of a .deb package.
+       -tgz, --targz
+                Create a Tar.gz archive instead of a .deb package.
 
-       -deb-tg, --debian-targz
-              Create both Debian and Tar.gz packages.
+       -deb-tgz, --debian-targz
+                Create both Debian and Tar.gz packages.
 
 GLOBAL VARIABLES
        By default, build-deb read the files to identify and replace global vari‐

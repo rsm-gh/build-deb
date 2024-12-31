@@ -69,13 +69,13 @@ function change_variables {
         -ds|--dont-sign)
             DONT_SIGN=1
     ;;
-        -ds-tg|--dont-sign-targz)
+        -ds-tgz|--dont-sign-targz)
             DONT_SIGN_TG=1                          
     ;;
-        -tg|--targz)
+        -tgz|--targz)
             BUILD=2
     ;;
-        -deb-tg|--debian-targz)
+        -deb-tgz|--debian-targz)
             BUILD=3     
     ;;
         *)
@@ -611,10 +611,10 @@ if [ "$HELP" -eq 1 ]; then
     -dcpc,      --dont-copy-changelog
     -frepo,     --force-reprepro
     -drepo,     --dont-add-reprepro
-    -tg,        --targz
-    -deb-tg,    --debian-targz
+    -tgz,       --targz
+    -deb-tgz,   --debian-targz
     -ds,        --dont-sign
-    -ds-tg,     --dont-sign-targz
+    -ds-tgz,    --dont-sign-targz
     
  Global Variables:
 
