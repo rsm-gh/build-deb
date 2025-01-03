@@ -9,30 +9,30 @@ For more details look at the example or the manual.
 
 The Debian package of `build-deb`, is built using the tool itself:
 ```bash
-root@linux:/home/foo/Software# build-deb build-deb-master -drgv
+ Performing control file checks... 
 
- Initializing the package.. 
-Deleted: /.git
-Gzip: /usr/share/man/man8/build-deb.8
-0755: /usr/bin/build-deb
-0755: /remove
-0755: /setup
-
- Installed Program Size: 120 kB 
+ Preparing the package... 
 Deleted: /DEBIAN_BASICS.md
+Deleted: /install.sh
 Deleted: /LICENSE
 Deleted: /README.md
-Deleted: /remove
-Deleted: /setup
+Deleted: /uninstall.sh
+Deleted: /.git
+Deleted: /.idea
+Gzip: /usr/share/man/man8/build-deb.8
+0755: /usr/bin/build-deb
 
- Building build-deb_1.5.1_all..
-dpkg-deb: building package 'build-deb' in '/home/foo/Software/build-deb_1.5.1_all_tmp.deb'.
+ Filling the control file... 
+Installed-Size: 71 kB
+
+ Building build-deb_1.6.1_all..
+dpkg-deb: building package 'build-deb' in '/home/cadweb/Software/build-deb_1.6.1_all_tmp.deb'.
 
  Installing the package..
-(Reading database ... 176254 files and directories currently installed.)
-Preparing to unpack .../build-deb_1.5.1_all.deb ...
-Unpacking build-deb (1.5.1) over (1.5.1) ...
-Setting up build-deb (1.5.1) ...
+(Reading database ... 176233 files and directories currently installed.)
+Preparing to unpack .../build-deb_1.6.1_all.deb ...
+Unpacking build-deb (1.6.1) over (1.6.1) ...
+Setting up build-deb (1.6.1) ...
 Processing triggers for man-db (2.13.0-1) ...
  
 
@@ -40,6 +40,7 @@ Processing triggers for man-db (2.13.0-1) ...
  The root keyring do not contains the private key for 'rafael@senties-martinelli.com', the package won't be signed.
 
  Cleaning the current directory..
+ 
 ```
 
 ## Manual
