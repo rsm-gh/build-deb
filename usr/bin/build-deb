@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#  Copyright (C) 2014-2016 Rafael Senties Martinelli
+#  Copyright (C) 2014-2016, 2025 Rafael Senties Martinelli
 #
 #  This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License 3 as published by
@@ -33,7 +33,7 @@ DONT_SIGN_TG=0
 #
 # Program Variables ( They shouldn't be modified )
 #
-VERSION=1.6.0
+VERSION=1.6.1
 RED="\e[31m"        
 RESET="\e[0m"       
 BLUE="\e[94m"       
@@ -331,15 +331,6 @@ function copy_changelog {
 
 function build_debian_package {
 
-    # Remove the files of the root folder
-    #
-    for file in "$path_dirname/$new_basename"_tmp/* ;do
-        if [ -f "$file" ]; then
-            rm -rf "$file"
-            echo "Deleted: ${file#"$path"}"
-        fi
-    done
-
     # Build the package
     #
     echo -e "\n$BLUE Building $new_basename..$RESET"
@@ -393,12 +384,12 @@ if [ $BUILD -gt 0 ]; then
     # ------- [Initialize the package] ------- 
     #
 
+    echo -e "\n$BLUE Performing control file checks... $RESET"
+
     if ! [ -f "$path/DEBIAN/control" ]; then
         echo -e "$RED The control file is missing.$RESET"
         exit
     fi
-    
-    echo -e "\n$BLUE Initializing the package.. $RESET"
     
     Control_Version=""
     Control_Package_name=""
@@ -437,9 +428,13 @@ if [ $BUILD -gt 0 ]; then
     scan_build_deb_file
     
     new_basename="$Control_Package_name"_"$Control_Version"_"$Control_Architecture"
-    
+
+    #
     # Copy of the original folder (We work with a temporary folder, not with the original.)
     #
+
+    echo -e "\n$BLUE Preparing the package... $RESET"
+
     rsync -av --delete "$path/" "$path_dirname/$new_basename"_tmp > /dev/null
     path="$path_dirname/$new_basename"_tmp
     
@@ -453,15 +448,25 @@ if [ $BUILD -gt 0 ]; then
     # Change the folder permissions
     #
     chown root:root -R "$path"
-        
-    
-    # Remove the .git folder
-    #
-    if [ -d "$path"/.git ]; then
-        rm -rf "$path"/.git
-        echo "Deleted: /.git"
-    fi
 
+
+    # Remove un-wanted files of the root folder
+    #
+    for file in "$path_dirname/$new_basename"_tmp/* ;do
+        if [ -f "$file" ]; then
+            rm -f "$file"
+            echo "Deleted: ${file#"$path"}"
+        fi
+    done
+
+    # Remove un-wanted dirs of the root folder
+    #
+    for dir in "$path_dirname/$new_basename"_tmp/.* ;do
+        if [ -d "$dir" ]; then
+            rm -rf "$dir"
+            echo "Deleted: ${dir#"$path"}"
+        fi
+    done
 
     #
     # ------- [Modify the package] ------- 
@@ -541,13 +546,13 @@ if [ $BUILD -gt 0 ]; then
     
     # Replace the variables of the control file
     #
+    echo -e "\n$BLUE Filling the control file... $RESET"
     Folder_Size=$(du -sb "$path" | cut -f1)
     DEBIAN_Size=$(du -sb "$path/DEBIAN" | cut -f1)
     SIZE=$((Folder_Size-DEBIAN_Size))
     SIZE=$((SIZE/1000))
-    echo -e "\n$BLUE Installed Program Size: $SIZE kB $RESET"
+    echo -e "Installed-Size: $SIZE kB"
     sed -i "s/DEB_BUILDER_SIZE/$SIZE/g" "$path/DEBIAN/control"
-    echo " "
 
 
     #
@@ -688,7 +693,7 @@ fi
 #
 if [ $LICENSE_DIALOG -eq 1 ]; then
     echo "
-Copyright (C) 2014-2016  Rafael Senties Martinelli 
+Copyright (C) 2014-2016, 2025 Rafael Senties Martinelli
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License 3 as published by
