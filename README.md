@@ -9,7 +9,7 @@ For more details look at the example or the manual.
 
 The Debian package of `build-deb`, is built using the tool itself:
 ```bash
-root@linux:/home/foo/Software# build-deb build-deb -drgv
+root@linux:/home/foo/Software# build-deb build-deb-master -drgv
 
  Initializing the package.. 
 Deleted: /.git
@@ -83,8 +83,7 @@ COMMANDS
                      • Compress manuals using gzip.
 
                      • Remove unnecessary files, such as *.pyc, backup files (*~),
-                     and files in the root directory ("/"). The ".git" folder will
-                     also be removed.
+                     and files/hidden dirs in the root directory.
 
               Optional:
                      • Sign the package (if a GPG key is available  and  the  main‐
