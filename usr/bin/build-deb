@@ -15,7 +15,7 @@
 #   along with this program; if not, write to the Free Software Foundation,
 #   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 
-_VERSION=1.7.0
+_VERSION=1.6.1
 
 _COLOR_RED="\e[31m"
 _COLOR_RESET="\e[0m"
@@ -462,9 +462,9 @@ function SignPkg {
 
 
 function CleanTmp {
-    echo -e "\n$_COLOR_BLUE Cleaning $SRC_TMP_DIRECTORY...$_COLOR_RESET"
-    #rm -rf "$SRC_TMP_DIRECTORY"
-    #echo " "
+    echo -e "\n$_COLOR_BLUE Deleting $SRC_TMP_DIRECTORY...$_COLOR_RESET"
+    rm -rf "$SRC_TMP_DIRECTORY"
+    echo " "
 }   
 
 
@@ -512,7 +512,8 @@ function SrcCopy {
 function ScanControlFile {
     #
     # Verify the DEBIAN/control file and retrieve: PKG_NAME, PKG_VERSION, PKG_ARCHITECTURE
-    #
+    # This must read the source directory in order to retrieve the variables
+    # and be used in the synchronization.
 
     echo -e "\n$_COLOR_BLUE Reading the control file...$_COLOR_RESET"
 
@@ -541,7 +542,7 @@ function ScanControlFile {
             PKG_EMAIL=$(echo "$PKG_EMAIL" | sed 's/^.*<//')
         fi
 
-    done < "$SRC_TMP_DIRECTORY/DEBIAN/control"
+    done < "$SRC_DIRECTORY/DEBIAN/control"
 
     if [ -z "$PKG_NAME" ]; then
         echo -e "$_COLOR_RED The package name (Package:) is missing in the control file.$_COLOR_RESET"
@@ -813,16 +814,13 @@ function BuildPkgs {
     TARGZ_DIR=$SRC_PARENT_DIR
     ScanOptionsFile
 
-    # Prepare the sources in a TMP directory
-    #
-    SRC_TMP_DIRECTORY="$SRC_PARENT_DIR"/"$PKG_BASENAME"_tmp
-    SrcCopy
-
     ScanControlFile
     PKG_BASENAME="$PKG_NAME"_"$PKG_VERSION"_"$PKG_ARCHITECTURE"
     PKG_DEB_PATH="$SRC_PARENT_DIR"/"$PKG_BASENAME".deb
     PKG_TARGZ_PATH="$TARGZ_DIR"/"$PKG_BASENAME".tar.gz
+    SRC_TMP_DIRECTORY="$SRC_PARENT_DIR"/"$PKG_BASENAME"_tmp
 
+    SrcCopy
     SrcClean
     SrcChmod
     SrcCompress
