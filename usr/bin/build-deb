@@ -296,18 +296,19 @@ function ScanOptionsFile {
     #
     #   Scan the options defined in the BUILD_DEB file
     #
-
     if ! [ -f "$SRC_DIRECTORY"/BUILD_DEB ]; then
         DONT_COPY_CHANGELOG=1
         DONT_ADD_TO_REPREPRO=1
         return
     fi
 
+    local file_line;
+
     #   Check for the option "arguments"
     #
-    while read -r LINE; do
-        if [[ "$LINE" == "Arguments"* ]] ; then
-            local string=${LINE#*:}
+    while read -r file_line; do
+        if [[ "$file_line" == "Arguments"* ]] ; then
+            local string=${file_line#*:}
             local args=("${string//,/ }")
             for arg in "${args[@]}"; do
                 ProcessCMDArg "$arg"
@@ -320,18 +321,20 @@ function ScanOptionsFile {
     #
     if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
 
-        while read -r LINE; do
-            if [[ "$LINE" == "RepositoryLocation"* ]] ; then
-                REPO_DIRECTORY=${LINE#*:}
+        while read -r file_line; do
+            if [[ "$file_line" == "RepositoryLocation"* ]] ; then
+                REPO_DIRECTORY=${file_line#*:}
 
-            elif [[ "$LINE" == "CodeName"* ]] ; then
-                REPO_CODENAME=${LINE#*:}
+            elif [[ "$file_line" == "CodeName"* ]] ; then
+                REPO_CODENAME=${file_line#*:}
             fi
 
         done < "$SRC_DIRECTORY"/BUILD_DEB
 
-        if [[ -n "$REPO_DIRECTORY" ]]; then
+        if [[ -z "$REPO_DIRECTORY" ]]; then
+            DONT_ADD_TO_REPREPRO=1
 
+        else
             if ! [ -d "$REPO_DIRECTORY" ]; then
                 echo -e "$_COLOR_RED The RepositoryLocation is not a directory.$_COLOR_RESET"
                 echo "$REPO_DIRECTORY"
@@ -357,9 +360,9 @@ function ScanOptionsFile {
     #
     if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
 
-        while read -r LINE; do
-            if [[ "$LINE" == "CopyChangelog"* ]] ; then
-                CHANGELOG_PASTE_DIR=${LINE#*:}
+        while read -r file_line; do
+            if [[ "$file_line" == "CopyChangelog"* ]] ; then
+                CHANGELOG_PASTE_DIR=${file_line#*:}
                 break
             fi
         done < "$SRC_DIRECTORY"/BUILD_DEB
@@ -390,9 +393,9 @@ function ScanOptionsFile {
 
     #   TarGz location
     #
-    while read -r LINE; do
-        if [[ "$LINE" == "TarGzLocation:"* ]] ; then
-            TARGZ_DIR=${LINE#*:}
+    while read -r file_line; do
+        if [[ "$file_line" == "TarGzLocation:"* ]] ; then
+            TARGZ_DIR=${file_line#*:}
             break
         fi
     done < "$SRC_DIRECTORY"/BUILD_DEB
