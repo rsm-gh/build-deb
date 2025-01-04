@@ -4,8 +4,8 @@
 # It the way of building packages. Empty options are ignored.
 #
 
-# Default arguments separated by commas
-Arguments:-drgv
+# Default arguments separated by spaces
+Arguments:-drgv -ds
 
 # Add the package to a reprepro repository
 RepositoryLocation:

@@ -148,7 +148,7 @@ function GenTemplateOptions {
 # It the way of building packages. Empty options are ignored.
 #
 
-# Default arguments separated by commas
+# Default arguments separated by spaces
 Arguments:
 
 # Add the package to a reprepro repository
@@ -308,9 +308,9 @@ function ScanOptionsFile {
     #
     while read -r file_line; do
         if [[ "$file_line" == "Arguments"* ]] ; then
-            local string=${file_line#*:}
-            local args=("${string//,/ }")
-            for arg in "${args[@]}"; do
+            local args_str=${file_line#*:}
+            local args_array=($args_str) # DO NOT ADD QUOTES HERE
+            for arg in "${args_array[@]}"; do
                 ProcessCMDArg "$arg"
             done
             break
