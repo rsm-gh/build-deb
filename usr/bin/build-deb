@@ -717,7 +717,7 @@ function SrcFillControlFile {
     pkg_size=$((pkg_size/1000))
 
     echo -e "Installed-Size: $pkg_size kB"
-    sed -i "s/DEB_BUILDER_SIZE/$pkg_size/g" "$SRC_DIRECTORY"/DEBIAN/control
+    sed -i "s/DEB_BUILDER_SIZE/$pkg_size/g" "$SRC_PARENT_DIR"/DEBIAN/control
 }
 
 function BuildPkgDeb {

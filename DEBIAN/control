@@ -4,7 +4,7 @@ Architecture: all
 Maintainer: Rafael Senties Martinelli <rafael@senties-martinelli.com>
 Depends: dpkg, rsync, gzip, file, tar, sed, coreutils
 Recommends: reprepro, gpg
-Installed-Size: 305
+Installed-Size: DEB_BUILDER_SIZE
 Section: Development
 Priority: Optional
 Homepage: https://github.com/rsm-gh/build-deb
