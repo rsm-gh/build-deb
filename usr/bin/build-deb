@@ -322,10 +322,10 @@ function ScanOptionsFile {
     if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
 
         while read -r file_line; do
-            if [[ "$file_line" == "RepositoryLocation"* ]] ; then
+            if [[ "$file_line" == "RepositoryLocation:"* ]] ; then
                 REPO_DIRECTORY=${file_line#*:}
 
-            elif [[ "$file_line" == "CodeName"* ]] ; then
+            elif [[ "$file_line" == "CodeName:"* ]] ; then
                 REPO_CODENAME=${file_line#*:}
             fi
 
@@ -361,7 +361,7 @@ function ScanOptionsFile {
     if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
 
         while read -r file_line; do
-            if [[ "$file_line" == "CopyChangelog"* ]] ; then
+            if [[ "$file_line" == "CopyChangelog:"* ]] ; then
                 CHANGELOG_PASTE_DIR=${file_line#*:}
                 break
             fi
