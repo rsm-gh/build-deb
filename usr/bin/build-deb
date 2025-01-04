@@ -25,8 +25,8 @@ DONT_INSTALL=0
 DONT_REPLACE_GLOBAL_VARIABLES=0
 DONT_SIGN=0
 FORCE_REPREPRO=0
-DONT_ADD_TO_REPREPRO=1
-DONT_COPY_CHANGELOG=1
+DONT_ADD_TO_REPREPRO=0
+DONT_COPY_CHANGELOG=0
 DONT_SIGN=0
 DONT_SIGN_TGZ=0
 BUILD_PKG=1
@@ -48,7 +48,6 @@ PKG_EMAIL=""
 PKG_DEB_PATH=""
 PKG_TARGZ_PATH=""
 
-CHANGELOG_COPY_PATH=""
 CHANGELOG_PASTE_DIR=""
 
 TARGZ_DIR=""
@@ -371,22 +370,13 @@ function ScanOptionsFile {
             DONT_COPY_CHANGELOG=1
 
         else
-            CHANGELOG_COPY_PATH="$SRC_TMP_DIRECTORY"/usr/share/doc/"$PKG_NAME"/changelog
-
             if ! [ -d "$CHANGELOG_PASTE_DIR" ]; then
                 DONT_COPY_CHANGELOG=1
                 echo -e "$_COLOR_RED The path to paste the changelog doesn't exists. It will not be created.$_COLOR_RESET"
                 echo "$CHANGELOG_PASTE_DIR"
                 echo ""
-
-            elif [ -f "$CHANGELOG_COPY_PATH" ]; then
-                DONT_COPY_CHANGELOG=0
-
             else
-                DONT_COPY_CHANGELOG=1
-                echo -e "$_COLOR_RED The changelog is missing in the source package.$_COLOR_RESET"
-                echo "$CHANGELOG_COPY_PATH"
-                echo ""
+                DONT_COPY_CHANGELOG=0
             fi
         fi
     fi
@@ -464,7 +454,17 @@ function CopyChangelog {
     fi
 
     echo -e "\n$_COLOR_BLUE Copying the changelog...$_COLOR_RESET"
-    cp "$CHANGELOG_COPY_PATH" "$CHANGELOG_PASTE_DIR"/"$PKG_BASENAME".changelog
+
+    local copy_path
+    copy_path="$SRC_TMP_DIRECTORY"/usr/share/doc/"$PKG_NAME"/changelog
+
+    if ! [ -f "$copy_path" ]; then
+        echo -e "$_COLOR_RED The changelog is missing in the source package.$_COLOR_RESET"
+        echo "$copy_path"
+        return
+    fi
+
+    cp "$copy_path" "$CHANGELOG_PASTE_DIR"/"$PKG_BASENAME".changelog
     echo -e " "
 
 }
@@ -822,10 +822,10 @@ function BuildPkgs {
         SignPkg "deb"
     fi
 
-    # Clean the data
+    # Extra
     #
-    CleanTmp
     CopyChangelog
+    CleanTmp
 
 }
 
