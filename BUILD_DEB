@@ -1,7 +1,8 @@
 
-# This is a build-deb Configuration file.
-# This file customizes the way of building packages.
-# Empty options are ignored.
+#
+# This is a build-deb options file: https://github.com/rsm-gh/build-deb
+# It the way of building packages. Empty options are ignored.
+#
 
 # Default arguments separated by commas
 Arguments:-drgv
