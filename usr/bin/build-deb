@@ -15,7 +15,7 @@
 #   along with this program; if not, write to the Free Software Foundation,
 #   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 
-_VERSION=1.6.0
+_VERSION=1.7.0
 
 _COLOR_RED="\e[31m"
 _COLOR_RESET="\e[0m"
@@ -433,7 +433,11 @@ function SignPkg {
         return
     fi
 
-    echo -e "\n$_COLOR_BLUE Signing the package...$_COLOR_RESET"
+    if [ "$1" == "deb" ]; then
+        echo -e "\n$_COLOR_BLUE Signing $PKG_DEB_PATH...$_COLOR_RESET"
+    else
+        echo -e "\n$_COLOR_BLUE Signing $PKG_TARGZ_PATH...$_COLOR_RESET"
+    fi
 
     if [[ -z "$PKG_EMAIL" ]]; then
         echo -e "$_COLOR_RED The email is missing in the control file.$_COLOR_RESET"
@@ -458,9 +462,9 @@ function SignPkg {
 
 
 function CleanTmp {
-    echo -e "\n$_COLOR_BLUE Cleaning the TMP directory...$_COLOR_RESET"
-    rm -rf "$SRC_TMP_DIRECTORY"
-    echo " "
+    echo -e "\n$_COLOR_BLUE Cleaning $SRC_TMP_DIRECTORY...$_COLOR_RESET"
+    #rm -rf "$SRC_TMP_DIRECTORY"
+    #echo " "
 }   
 
 
@@ -492,7 +496,7 @@ function SrcCopy {
     # Copy of the source folder
     #
 
-    echo -e "\n$_COLOR_BLUE Copying the project to a TMP dir... $_COLOR_RESET"
+    echo -e "\n$_COLOR_BLUE Copying the project $SRC_TMP_DIRECTORY... $_COLOR_RESET"
 
     rsync -av --delete "$SRC_DIRECTORY"/ "$SRC_TMP_DIRECTORY" > /dev/null
 
@@ -559,7 +563,7 @@ function ScanControlFile {
 
 function SrcClean {
 
-    echo -e "\n$_COLOR_BLUE Removing unwanted data...$_COLOR_RESET"
+    echo -e "\n$_COLOR_BLUE Removing unwanted files and directories...$_COLOR_RESET"
 
     # Remove un-wanted files and directories
     #
@@ -740,7 +744,7 @@ function BuildPkgDeb {
 
     # Build the package
     #
-    echo -e "\n$_COLOR_BLUE Building $PKG_BASENAME...$_COLOR_RESET"
+    echo -e "\n$_COLOR_BLUE Building $PKG_DEB_PATH...$_COLOR_RESET"
 
     dpkg -b "$SRC_TMP_DIRECTORY" "$SRC_PARENT_DIR"
 
@@ -750,8 +754,6 @@ function BuildPkgDeb {
         exit 1
     fi
 
-    echo "Pkg location: $PKG_DEB_PATH"
-
     # Print the SHA sums
     #
     PrintSha "$PKG_DEB_PATH"
@@ -759,7 +761,7 @@ function BuildPkgDeb {
     # Install the package
     #
     if [ $DONT_INSTALL -eq 0 ]; then
-        echo -e "\n$_COLOR_BLUE Installing the package...$_COLOR_RESET"
+        echo -e "\n$_COLOR_BLUE Installing $PKG_DEB_PATH...$_COLOR_RESET"
         dpkg -i "$PKG_DEB_PATH"
     fi
     
@@ -771,7 +773,7 @@ function BuildPkgDeb {
             echo -e "$_COLOR_RED Error: /usr/bin/reprepro is missing.$_COLOR_RESET"
 
         else
-            echo -e "$_COLOR_BLUE Adding the package to the local repository $_COLOR_RESET"
+            echo -e "$_COLOR_BLUE Adding $PKG_DEB_PATH to the local repository $_COLOR_RESET"
 
             if [ "$FORCE_REPREPRO" -eq 1 ]; then
                 /usr/bin/reprepro remove "$REPO_CODENAME" "$PKG_NAME"
@@ -785,9 +787,8 @@ function BuildPkgDeb {
 
 
 function BuildPkgTgz {
-    echo -e "\n$_COLOR_BLUE Compressing TarGz \"$PKG_BASENAME\"...$_COLOR_RESET"
+    echo -e "\n$_COLOR_BLUE Building $PKG_TARGZ_PATH...$_COLOR_RESET"
     tar -pczf "$PKG_TARGZ_PATH" -C "$SRC_TMP_DIRECTORY" .
-    echo "Pkg location: $PKG_TARGZ_PATH"
     PrintSha "$PKG_TARGZ_PATH"
 }
 
@@ -831,13 +832,11 @@ function BuildPkgs {
     # Build the packages
     #
     if [ $BUILD_PKG -eq 2 ] || [ $BUILD_PKG -eq 3 ]; then
-        echo -e "\n$_COLOR_BLUE Building a Tar.gz Package...$_COLOR_RESET"
         BuildPkgTgz
         SignPkg "tgz"
     fi
 
     if [ $BUILD_PKG -eq 1 ] || [ $BUILD_PKG -eq 3 ]; then
-        echo -e "\n$_COLOR_BLUE Building a Debian Package...$_COLOR_RESET"
         BuildPkgDeb
         SignPkg "deb"
     fi
