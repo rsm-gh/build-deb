@@ -392,21 +392,25 @@ function ScanOptionsFile {
 
     #   TarGz location
     #
+    local new_tgz_dir
+
     while read -r file_line; do
         if [[ "$file_line" == "TarGzLocation:"* ]] ; then
-            TARGZ_DIR=${file_line#*:}
-            TARGZ_DIR=$(echo "$TARGZ_DIR" | sed 's:/*$::') # remove the ending slashes
-            TARGZ_DIR=${TARGZ_DIR// } # remove trailing spaces
+            new_tgz_dir=${file_line#*:}
+            new_tgz_dir=$(echo "$new_tgz_dir" | sed 's:/*$::') # remove the ending slashes
+            new_tgz_dir=${new_tgz_dir// } # remove trailing spaces
             break
         fi
     done < "$SRC_DIRECTORY"/BUILD_DEB
 
-    echo "TARGZ DIR $TARGZ_DIR"
-
-    if [[ -n "$TARGZ_DIR" ]] && ! [ -d "$TARGZ_DIR" ]; then
-        echo -e "$_COLOR_RED The directory of the TarGz package doesn't exists. $_COLOR_RESET"
-        echo "$TARGZ_DIR"
-        exit 1
+    if [[ -n "$new_tgz_dir" ]]; then
+        if [ -d "$new_tgz_dir" ]; then
+           TARGZ_DIR=new_tgz_dir
+        else
+            echo -e "$_COLOR_RED The directory of the TarGz package doesn't exists. $_COLOR_RESET"
+            echo "$new_tgz_dir"
+            exit 1
+        fi
     fi
 
 }
@@ -746,6 +750,8 @@ function BuildPkgDeb {
         exit 1
     fi
 
+    echo "Pkg location: $PKG_DEB_PATH"
+
     # Print the SHA sums
     #
     PrintSha "$PKG_DEB_PATH"
@@ -781,6 +787,7 @@ function BuildPkgDeb {
 function BuildPkgTgz {
     echo -e "\n$_COLOR_BLUE Compressing TarGz \"$PKG_BASENAME\"...$_COLOR_RESET"
     tar -pczf "$PKG_TARGZ_PATH" -C "$SRC_TMP_DIRECTORY" .
+    echo "Pkg location: $PKG_TARGZ_PATH"
     PrintSha "$PKG_TARGZ_PATH"
 }
 
