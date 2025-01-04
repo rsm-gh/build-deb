@@ -5,7 +5,7 @@
 #
 
 # Default arguments separated by spaces
-Arguments: -drgv -deb-tgz
+Arguments: -drgv
 
 # Add the package to a reprepro repository
 RepositoryLocation:
