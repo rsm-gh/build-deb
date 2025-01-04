@@ -268,10 +268,13 @@ function ScanCmdArgs {
         local current_dir
         current_dir=$(pwd)
 
-        if [ -d "$1" ]; then
+        local possible_path
+        possible_path=$(echo "$1" | sed 's:/*$::') # remove the ending slashes
+
+        if [ -d "$possible_path" ]; then
             SRC_DIRECTORY="$1"
 
-        elif [ -d "$current_dir/$1" ]; then
+        elif [ -d "$current_dir/$possible_path" ]; then
             SRC_DIRECTORY="$current_dir/$1"
 
         else
@@ -324,6 +327,7 @@ function ScanOptionsFile {
         while read -r file_line; do
             if [[ "$file_line" == "RepositoryLocation:"* ]] ; then
                 REPO_DIRECTORY=${file_line#*:}
+                REPO_DIRECTORY=$(echo "$REPO_DIRECTORY" | sed 's:/*$::') # remove the ending slashes
 
             elif [[ "$file_line" == "CodeName:"* ]] ; then
                 REPO_CODENAME=${file_line#*:}
@@ -363,6 +367,7 @@ function ScanOptionsFile {
         while read -r file_line; do
             if [[ "$file_line" == "CopyChangelog:"* ]] ; then
                 CHANGELOG_PASTE_DIR=${file_line#*:}
+                CHANGELOG_PASTE_DIR=$(echo "$CHANGELOG_PASTE_DIR" | sed 's:/*$::') # remove the ending slashes
                 break
             fi
         done < "$SRC_DIRECTORY"/BUILD_DEB
