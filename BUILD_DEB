@@ -15,4 +15,4 @@ CodeName:
 CopyChangelog:
 
 # Destination folder when creating Tar.gz packages
-TarGzLocation: /home/cadweb/Desktop/
+TarGzLocation:

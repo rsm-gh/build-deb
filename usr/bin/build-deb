@@ -780,7 +780,7 @@ function BuildPkgDeb {
 
 function BuildPkgTgz {
     echo -e "\n$_COLOR_BLUE Compressing TarGz \"$PKG_BASENAME\"...$_COLOR_RESET"
-    tar -pczf "$PKG_TARGZ_PATH" -C "$SRC_DIRECTORY" .
+    tar -pczf "$PKG_TARGZ_PATH" -C "$SRC_TMP_DIRECTORY" .
     PrintSha "$PKG_TARGZ_PATH"
 }
 
