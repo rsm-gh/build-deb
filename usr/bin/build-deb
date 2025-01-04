@@ -328,9 +328,11 @@ function ScanOptionsFile {
             if [[ "$file_line" == "RepositoryLocation:"* ]] ; then
                 REPO_DIRECTORY=${file_line#*:}
                 REPO_DIRECTORY=$(echo "$REPO_DIRECTORY" | sed 's:/*$::') # remove the ending slashes
+                REPO_DIRECTORY=${REPO_DIRECTORY// } # remove trailing spaces
 
             elif [[ "$file_line" == "CodeName:"* ]] ; then
                 REPO_CODENAME=${file_line#*:}
+                REPO_CODENAME=${REPO_CODENAME// } # remove trailing spaces
             fi
 
         done < "$SRC_DIRECTORY"/BUILD_DEB
@@ -368,6 +370,7 @@ function ScanOptionsFile {
             if [[ "$file_line" == "CopyChangelog:"* ]] ; then
                 CHANGELOG_PASTE_DIR=${file_line#*:}
                 CHANGELOG_PASTE_DIR=$(echo "$CHANGELOG_PASTE_DIR" | sed 's:/*$::') # remove the ending slashes
+                CHANGELOG_PASTE_DIR=${CHANGELOG_PASTE_DIR// } # remove trailing spaces
                 break
             fi
         done < "$SRC_DIRECTORY"/BUILD_DEB
@@ -392,9 +395,13 @@ function ScanOptionsFile {
     while read -r file_line; do
         if [[ "$file_line" == "TarGzLocation:"* ]] ; then
             TARGZ_DIR=${file_line#*:}
+            TARGZ_DIR=$(echo "$TARGZ_DIR" | sed 's:/*$::') # remove the ending slashes
+            TARGZ_DIR=${TARGZ_DIR// } # remove trailing spaces
             break
         fi
     done < "$SRC_DIRECTORY"/BUILD_DEB
+
+    echo "TARGZ DIR $TARGZ_DIR"
 
     if [[ -n "$TARGZ_DIR" ]] && ! [ -d "$TARGZ_DIR" ]; then
         echo -e "$_COLOR_RED The directory of the TarGz package doesn't exists. $_COLOR_RESET"

@@ -5,7 +5,7 @@
 #
 
 # Default arguments separated by spaces
-Arguments:-drgv -deb-tgz
+Arguments: -drgv -deb-tgz
 
 # Add the package to a reprepro repository
 RepositoryLocation:
@@ -15,4 +15,4 @@ CodeName:
 CopyChangelog:
 
 # Destination folder when creating Tar.gz packages
-TarGzLocation:/home/cadweb/Desktop
+TarGzLocation: /home/cadweb/Desktop/
