@@ -120,6 +120,28 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 }
 
 
+
+function PrintSha {
+    #
+    # This function takes as argument the absolute path of a file
+    #
+
+    local sha_bin
+    local sha_value
+
+    for number in 256 384 512; do
+        sha_bin=/usr/bin/sha"$number"sum
+
+        if [ ! -f "$sha_bin" ]; then
+            echo "$sha_bin is missing."
+        else
+            sha_value=$("$sha_bin" "$1" | cut -d ' ' -f1)
+            echo "SHA$number: $sha_value"
+        fi
+    done
+
+}
+
 function GenTemplateOptions {
     echo "
 # This is a build-deb Configuration file.
@@ -707,7 +729,11 @@ function BuildPkgDeb {
         rm -rf "$SRC_TMP_DIRECTORY"
         exit 1
     fi
-    
+
+    # Print the SHA sums
+    #
+    PrintSha "$PKG_DEB_PATH"
+
     # Install the package
     #
     if [ $DONT_INSTALL -eq 0 ]; then
@@ -739,6 +765,7 @@ function BuildPkgDeb {
 function BuildPkgTgz {
     echo -e "\n$_COLOR_BLUE Compressing TarGz \"$PKG_BASENAME\"...$_COLOR_RESET"
     tar -pczf "$PKG_TARGZ_PATH" -C "$SRC_DIRECTORY" .
+    PrintSha "$PKG_TARGZ_PATH"
 }
 
 
