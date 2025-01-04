@@ -561,17 +561,17 @@ function SrcClean {
 
     echo -e "\n$_COLOR_BLUE Removing unwanted data...$_COLOR_RESET"
 
-    # Remove un-wanted files of the root folder
+    # Remove un-wanted files and directories
     #
+    shopt -s dotglob # enable hidden files
     for file in "$SRC_TMP_DIRECTORY"/* ;do
         if [ -f "$file" ]; then
             rm -f "$file"
             echo "Deleted: ${file#"$SRC_TMP_DIRECTORY"}"
         fi
     done
+    shopt -u dotglob
 
-    # Remove un-wanted dirs of the root folder
-    #
     for dir in "$SRC_TMP_DIRECTORY"/.* ;do
         if [ -d "$dir" ]; then
             rm -rf "$dir"
