@@ -2,9 +2,9 @@ Package: build-deb
 Version: 1.6.0
 Architecture: all
 Maintainer: Rafael Senties Martinelli <rafael@senties-martinelli.com>
-Depends: dpkg, rsync, gzip, file, tar
+Depends: dpkg, rsync, gzip, file, tar, sed, coreutils
 Recommends: reprepro
-Installed-Size: DEB_BUILDER_SIZE
+Installed-Size: 305
 Section: Development
 Priority: Optional
 Homepage: https://github.com/rsm-gh/build-deb
