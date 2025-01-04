@@ -15,11 +15,11 @@
 #   along with this program; if not, write to the Free Software Foundation,
 #   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 
+_VERSION=1.6.1
 
-#
-# Default configuration that you may modify if you want to apply it
-# by default in all your builds.
-#
+_COLOR_RED="\e[31m"
+_COLOR_RESET="\e[0m"
+_COLOR_BLUE="\e[94m"
 
 DONT_INSTALL=0
 DONT_REPLACE_GLOBAL_VARIABLES=0
@@ -28,28 +28,147 @@ FORCE_REPREPRO=0
 DONT_ADD_TO_REPREPRO=0
 DONT_COPY_CHANGELOG=0
 DONT_SIGN=0
-DONT_SIGN_TG=0
+DONT_SIGN_TGZ=0
+BUILD_PKG=1
+DISPLAY_HELP=0
+DISPLAY_LICENSE=0
+GENERATE_TEMPLATE_OPTIONS=0
+GENERATE_TEMPLATE_CONTROL=0
 
-#
-# Program Variables ( They shouldn't be modified )
-#
-VERSION=1.6.1
-RED="\e[31m"        
-RESET="\e[0m"       
-BLUE="\e[94m"       
+SRC_DIRECTORY=""
+SRC_PARENT_DIR=""
+SRC_TMP_DIRECTORY=""
 
-OPTIONS_FILE=0
-BUILD=1
-LICENSE_DIALOG=0
-CONTROL_FILE_TEMPLATE=0
-HELP=0
+PKG_NAME=""
+PKG_VERSION=""
+PKG_ARCHITECTURE=""
+PKG_BASENAME=""
+PKG_EMAIL=""
+
+PKG_DEB_PATH=""
+PKG_TARGZ_PATH=""
+
+CHANGELOG_COPY_PATH=""
+CHANGELOG_PASTE_DIR=""
+
+TARGZ_DIR=""
+REPO_DIRECTORY=""
+REPO_CODENAME=""
 
 
-#
-# ------- [Scan the arguments] ------- 
-#
+function PrintHelp {
+    echo "
+Usage:
+  build-deb <Command> [Arguments...]
 
-function change_variables {
+Command:
+
+  <source folder> Folder containing a DEBIAN structure.
+          *By default it builds a Debian Package.
+
+  -c,     --control   Template of the control file.
+  -o,     --options   Template of the options file.
+
+  -h,     --help      Display this dialog.
+  -v,     --version   Display the current version.
+  -l,     --license   Display the license.
+
+Arguments:
+
+  -di,        --dont-install
+  -drgv,      --dont-replace-global-variables
+  -dcpc,      --dont-copy-changelog
+  -frepo,     --force-reprepro
+  -drepo,     --dont-add-reprepro
+  -tgz,       --targz
+  -deb-tgz,   --debian-targz
+  -ds,        --dont-sign
+  -ds-tgz,    --dont-sign-targz
+
+Global Variables:
+
+  DEB_BUILDER_VERSION      Value of the Version field of the control file.
+  DEB_BUILDER_DATE_TIME    Format: \"Sat Jan 10 16:32:30 CET 2015\"
+  DEB_BUILDER_YEAR         Format: \"2015\"
+  DEB_BUILDER_DATE         Format: \"Year-Month-Day\"
+
+Control File:
+
+  Installed-Size: DEB_BUILDER_SIZE
+
+"
+}
+
+
+function PrintLicense {
+    echo "
+Copyright (C) 2014-2016, 2025 Rafael Senties Martinelli
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License 3 as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
+"
+}
+
+
+function GenTemplateOptions {
+    echo "
+# This is a build-deb Configuration file.
+# This file customizes the way of building packages.
+# Empty options are ignored.
+
+# Default arguments separated by commas
+Arguments:
+
+# Add the package to a reprepro repository
+RepositoryLocation:
+CodeName:
+
+# Copy the changelog somewhere
+CopyChangelog:
+
+# Destination folder when creating Tar.gz packages
+TarGzLocation:
+        " > "BUILD_DEB"
+}
+
+
+function GenTemplateControl {
+
+    if ! [ -d "DEBIAN" ]; then
+        mkdir "DEBIAN"
+    fi
+
+    if [ -f "DEBIAN/control" ]; then
+        echo "The control file already exists."
+    else
+        echo "Package:
+Version:
+Architecture:
+Maintainer: name <email>
+Depends: prog1, prog2 (>=2.0), etc,
+Installed-Size: DEB_BUILDER_SIZE
+Section: Extras
+Priority: Optional
+Homepage:
+Description: Here you put a 1 line description, Less than 80 chars
+ Here you put a long description...
+ .
+ The point makes an empty line between the first paragraph and this one...
+" > "DEBIAN/control"
+    fi
+}
+
+function ProcessCMDArg {
     case "$1" in
         -di|--dont-install)
             DONT_INSTALL=1
@@ -70,26 +189,30 @@ function change_variables {
             DONT_SIGN=1
     ;;
         -ds-tgz|--dont-sign-targz)
-            DONT_SIGN_TG=1                          
+            DONT_SIGN_TGZ=1                          
     ;;
         -tgz|--targz)
-            BUILD=2
+            BUILD_PKG=2
     ;;
         -deb-tgz|--debian-targz)
-            BUILD=3     
+            BUILD_PKG=3
     ;;
         *)
-            echo -e "\e[31m '$1' is not an option, use 'build-deb --help' \e[0m"
-            exit
+            echo -e "$_COLOR_RED '$1' is not an option, use 'build-deb --help' $_COLOR_RESET"
+            exit 1
     esac
 }
 
-#   Scan the arguments provided by the command line
-#
-if [[ -z "$1" ]]; then
-    echo "Invalid option. Use \"build-deb --help\""
-    BUILD=0
-else
+function ScanCmdArgs {
+    #
+    #   Scan the arguments provided by the command line
+    #
+
+    if [[ -z "$1" ]]; then
+        echo "Invalid option. Use \"build-deb --help\""
+        exit 1
+    fi
+
     if  [[ "$1" == "-c" ]]              ||
         [[ "$1" == "--control" ]]       ||
         [[ "$1" == "-l" ]]              ||
@@ -99,614 +222,610 @@ else
         [[ "$1" == "-h" ]]              ||
         [[ "$1" == "--options" ]]       ||
         [[ "$1" == "-o" ]]              ||
-        [[ "$1" == "--help" ]]  
+        [[ "$1" == "--help" ]]
     then
         case "$1" in
             -l|--license)
-                LICENSE_DIALOG=1
+                DISPLAY_LICENSE=1
         ;;
             -h|--help)
-                HELP=1
+                DISPLAY_HELP=1
         ;;
             -v|--version)
-                echo "Version $VERSION"
+                echo "Version $_VERSION"
+                exit
         ;;
             -c|--control)
-                CONTROL_FILE_TEMPLATE=1
+                GENERATE_TEMPLATE_CONTROL=1
         ;;
             -o|--options)
-                OPTIONS_FILE=1
+                GENERATE_TEMPLATE_OPTIONS=1
         esac
-        BUILD=0
+        BUILD_PKG=0
     else
-        local=$(pwd)
-        cd /
+        local current_dir
+        current_dir=$(pwd)
+
         if [ -d "$1" ]; then
-            path="$1"
+            SRC_DIRECTORY="$1"
+
+        elif [ -d "$current_dir/$1" ]; then
+            SRC_DIRECTORY="$current_dir/$1"
+
         else
-            if [ -d "$local/$1" ]; then
-                path="$local/$1"
-            else
-                echo -e "$RED ERROR: Enter and absolute path or a directory, or its name if you are working in the current directory. $RESET"
-                exit 1
-            fi
-            
-        fi
-    
-        if [ "$(id -u)" != "0" ]; then
-            echo -e "$RED You need root permission for building deb packages.$RESET" 1>&2
+            echo -e "$_COLOR_RED Error: Enter and absolute path or a directory, or it's name if you are working in the current directory. $_COLOR_RESET"
             exit 1
         fi
-        
-        path_dirname=$(dirname "$path")
-        path_basename=$(basename "$path")   
-        cd "$path_dirname" || (echo "exit error because wrong path='$path_dirname'" && exit)
-    
     fi
-    
-    #   Scan the arguments by skipping the first one..
+
+    #   Validate the arguments by skipping the first one...
     #
     i=0
     for var in "$@"; do
         if [ "$i" -gt 0 ]; then
-            change_variables "$var"
+            ProcessCMDArg "$var"
         fi
-        i=$((i+1))  
+        i=$((i+1))
     done
-fi
 
-function scan_build_deb_file {
+}
 
-    #   Scan the arguments given in the BUILD_DEB file
+function ScanOptionsFile {
     #
-    if [ -f "$path/BUILD_DEB" ]; then
-        
-        #   Check for the option "arguments"
-        while read -r LINE; do
-            if [[ "$LINE" == "Arguments"* ]] ; then
-                string=${LINE#*:}
-                args=("${string//,/ }")
-                for i in "${args[@]}"; do
-                    change_variables "$i"
-                done
-            fi
-        done < "$path/BUILD_DEB"
-        
-        #   Check for the option "add to reprepro"
-        #
-        if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
-            repo_location=''
-            repo_codename=''
-        
-            while read -r LINE; do
-                if [[ "$LINE" == "RepositoryLocation"* ]] ; then
-                    repo_location=${LINE#*:}
-                elif [[ "$LINE" == "CodeName"* ]] ; then
-                    repo_codename=${LINE#*:}
-                fi
-            done < "$path/BUILD_DEB"
-        
-            if [[ -n "$repo_location" ]] && [[ -n "$repo_codename" ]]; then
-                if [ -n "$repo_codename" ]; then
-                    if [ -d "$repo_location" ]; then
-                        if ! [ -d "$repo_location"/conf ]; then
-                            echo -e "$RED The directory is not a valid reprepro repository. $RESET"
-                            echo "$repo_location"
-                            echo ""
-                            DONT_ADD_TO_REPREPRO=1
-                        fi
-                    else
-                        echo -e "$RED The repository location is not a directory.$RESET"
-                        echo "$repo_location"
-                        echo ""
-                        DONT_ADD_TO_REPREPRO=1
-                    fi
-                else
-                    echo -e "$RED The distribution of the reprepro repository is missing. $RESET"
-                    echo ""
-                    DONT_ADD_TO_REPREPRO=1
-                fi
-            else
-                DONT_ADD_TO_REPREPRO=1
-            fi
-        fi
+    #   Scan the options defined in the BUILD_DEB file
+    #
 
-        #   Check for the option "copy the changelog"
-        #
-        if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
-        
-            while read -r LINE; do
-                if [[ "$LINE" == "CopyChangelog"* ]] ; then
-                    changelog_dir_location=${LINE#*:}
-                fi
-            done < "$path/BUILD_DEB"
-                        
-            if  [ -n "$changelog_dir_location" ]; then
-            
-                changelog_path="$path_dirname"/"$path_basename"/usr/share/doc/"$Control_Package_name"/changelog
-                
-                if ! [ -d "$changelog_dir_location" ]; then
-                    echo -e "$RED The path to copy the changelog doesn't exists. It will not be created.$RESET"
-                    echo "$changelog_path"
-                    echo ""
-                elif [ -f "$changelog_path" ]; then
-                    changelog_file=$(cat "$changelog_path")
-                    DONT_COPY_CHANGELOG=0
-                else
-                    DONT_COPY_CHANGELOG=1
-                    echo -e "$RED Changelog missing in the source package.$RESET"
-                    echo "$changelog_path"
-                    echo ""
-                fi
-            else
-                DONT_COPY_CHANGELOG=1
-            fi
-        fi
-
-        #   TarGz location
-        #
-        TarGzLocation=""
-        while read -r LINE; do
-            if [[ "$LINE" == "TarGzLocation:"* ]] ; then
-                TarGzLocation=${LINE#*:}
-            fi
-        done < "$path/BUILD_DEB"
-        
-        if [[ -n "$TarGzLocation" ]] && ! [ -d "$TarGzLocation" ]; then
-            echo -e "$RED The directory of the TarGz package doesn't exists. $RESET"
-            echo "$TarGzLocation"
-            exit
-        fi
-            
-    else
+    if ! [ -f "$SRC_DIRECTORY"/BUILD_DEB ]; then
         DONT_COPY_CHANGELOG=1
         DONT_ADD_TO_REPREPRO=1
+        return
     fi
-}
 
-
-#
-# ------- [Build the package] ------- 
-#
-
-function sign_the_package {
+    #   Check for the option "arguments"
     #
-    # This function takes as argument "deb" to sign Debian packages
-    #
+    while read -r LINE; do
+        if [[ "$LINE" == "Arguments"* ]] ; then
+            local string=${LINE#*:}
+            local args=("${string//,/ }")
+            for arg in "${args[@]}"; do
+                ProcessCMDArg "$arg"
+            done
+            break
+        fi
+    done < "$SRC_DIRECTORY"/BUILD_DEB
 
-    if [ $DONT_SIGN -eq 1 ]; then
-        :
-    elif ! [[ "$1" == "deb" ]] && [[ $DONT_SIGN_TG -eq 1 ]]; then
-        :
-    else
-        signed=0
+    #   Check for the option "add to reprepro"
+    #
+    if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
+
         while read -r LINE; do
-           if [[ "$LINE" == *\<*\@*\>* ]] ; then
-              signed=1
-              EMAIL=${LINE%>*}
-              EMAIL=$(echo "$EMAIL" | sed 's/^.*<//')
-              break
-           fi
-        done < "$path"/DEBIAN/control
-        if [ $signed -eq 1 ]; then
-            echo -e "\n$BLUE Email found in the control file,$RESET"
-            GPG=$(gpg --list-keys)
-            if [[ "$GPG" == *"$EMAIL"* ]] ; then
-                echo -e "$BLUE Signing the package..$RESET"
-                if [ "$1" == "deb" ]; then
-                    dpkg-sig -k "$EMAIL" --sign builder "$path_dirname/$new_basename".deb
-                else
-                    if [ -n "$TarGzLocation" ]; then
-                        gpg --local-user "$EMAIL" --detach --sign "$TarGzLocation/$new_basename".tar.gz
-                    else
-                        gpg --local-user "$EMAIL" --detach --sign "$path_dirname/$new_basename".tar.gz
-                    fi
-                fi
-            else
-                echo -e "$RED The root keyring do not contains the private key for '$EMAIL', the package won't be signed.$RESET"
+            if [[ "$LINE" == "RepositoryLocation"* ]] ; then
+                REPO_DIRECTORY=${LINE#*:}
+
+            elif [[ "$LINE" == "CodeName"* ]] ; then
+                REPO_CODENAME=${LINE#*:}
             fi
-        else
-            echo -e "\n$RED The email is missing in the control file.$RESET"
+
+        done < "$SRC_DIRECTORY"/BUILD_DEB
+
+        if [[ -n "$REPO_DIRECTORY" ]]; then
+
+            if ! [ -d "$REPO_DIRECTORY" ]; then
+                echo -e "$_COLOR_RED The RepositoryLocation is not a directory.$_COLOR_RESET"
+                echo "$REPO_DIRECTORY"
+                echo ""
+                DONT_ADD_TO_REPREPRO=1
+
+            elif ! [ -d "$REPO_DIRECTORY"/conf ]; then
+                echo -e "$_COLOR_RED The RepositoryLocation is not a valid reprepro repository. $_COLOR_RESET"
+                echo "$REPO_DIRECTORY"
+                echo ""
+                DONT_ADD_TO_REPREPRO=1
+
+            elif [ -z "$REPO_CODENAME" ]; then
+                echo -e "$_COLOR_RED The CodeName of the reprepro repository is missing. $_COLOR_RESET"
+                echo ""
+                DONT_ADD_TO_REPREPRO=1
+            fi
+
         fi
     fi
-}   
 
-
-function clean_data {
-
-    # Clean the data created by the program
+    #   Check for the option "copy the changelog"
     #
-    echo -e "\n$BLUE Cleaning the current directory..$RESET"
-    rm -rf "$path"
-    echo " "    
-}   
-
-function copy_changelog {
     if [ $DONT_COPY_CHANGELOG -eq 0 ]; then
-        echo -e "\n$BLUE Copying the changelog..$RESET"
-        echo "$changelog_file" > "$changelog_dir_location"/"$new_basename".changelog
-        echo -e " "
+
+        while read -r LINE; do
+            if [[ "$LINE" == "CopyChangelog"* ]] ; then
+                CHANGELOG_PASTE_DIR=${LINE#*:}
+                break
+            fi
+        done < "$SRC_DIRECTORY"/BUILD_DEB
+
+        if  [ -z "$CHANGELOG_PASTE_DIR" ]; then
+            DONT_COPY_CHANGELOG=1
+
+        else
+            CHANGELOG_COPY_PATH="$SRC_TMP_DIRECTORY"/usr/share/doc/"$PKG_NAME"/changelog
+
+            if ! [ -d "$CHANGELOG_PASTE_DIR" ]; then
+                DONT_COPY_CHANGELOG=1
+                echo -e "$_COLOR_RED The path to paste the changelog doesn't exists. It will not be created.$_COLOR_RESET"
+                echo "$CHANGELOG_PASTE_DIR"
+                echo ""
+
+            elif [ -f "$CHANGELOG_COPY_PATH" ]; then
+                DONT_COPY_CHANGELOG=0
+
+            else
+                DONT_COPY_CHANGELOG=1
+                echo -e "$_COLOR_RED The changelog is missing in the source package.$_COLOR_RESET"
+                echo "$CHANGELOG_COPY_PATH"
+                echo ""
+            fi
+        fi
     fi
-}
 
-function build_debian_package {
-
-    # Build the package
+    #   TarGz location
     #
-    echo -e "\n$BLUE Building $new_basename..$RESET"
-    dpkg -b "$path"
-    if ! [ -f "$path".deb ]; then
-        echo -e "\n$RED The deb package is missing! the program will exit.$RESET"
-        rm -rf "$path"
+    while read -r LINE; do
+        if [[ "$LINE" == "TarGzLocation:"* ]] ; then
+            TARGZ_DIR=${LINE#*:}
+            break
+        fi
+    done < "$SRC_DIRECTORY"/BUILD_DEB
+
+    if [[ -n "$TARGZ_DIR" ]] && ! [ -d "$TARGZ_DIR" ]; then
+        echo -e "$_COLOR_RED The directory of the TarGz package doesn't exists. $_COLOR_RESET"
+        echo "$TARGZ_DIR"
         exit 1
     fi
 
-    mv "$path".deb "$path_dirname"/"$new_basename".deb
-    
-    # Install the package
-    #
-    if [ $DONT_INSTALL -eq 0 ]; then
-        echo -e "\n$BLUE Installing the package..$RESET"
-        dpkg -i "$path_dirname/$new_basename".deb
-        echo " "
-    fi
-    
-    # Add the pacakge to reprepro
-    #
-    if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
-        echo -e "$BLUE Adding the package to the local repository $RESET"
-        cd "$repo_location" || (echo "exit error because wrong path='$repo_location'" && exit)
-    
-        if [ "$FORCE_REPREPRO" -eq 1 ]; then
-            /usr/bin/reprepro remove "$repo_codename" "$Control_Package_name"
-        fi
-        
-        /usr/bin/reprepro --ask-passphrase -Vb . includedeb "$repo_codename" "$path_dirname"/"$new_basename".deb
-        echo ""
-    fi
-        
 }
 
-function build_tg_package {
-    echo -e "$BLUE Compressing TarGz \"$new_basename\"..$RESET"
 
-    if [ -n "$TarGzLocation" ]; then
-        tar -pczf "$TarGzLocation/$new_basename".tar.gz -C "$path" .
+function SignPkg {
+    #
+    # This function takes as argument "deb" or "tgz"
+    #
+    if ! [[ "$1" == "deb" ]] && ! [[  "$1" == "tgz" ]]; then
+        echo -e "$_COLOR_RED Critical Error: wrong argument on SignPkg=$1.$_COLOR_RESET"
+        exit 1
+    fi
+
+    if [ $DONT_SIGN -eq 1 ]; then
+        return
+    fi
+
+    if ! [[ "$1" == "deb" ]] && [[ $DONT_SIGN_TGZ -eq 1 ]]; then
+        return
+    fi
+
+    echo -e "\n$_COLOR_BLUE Signing the package...$_COLOR_RESET"
+
+    if [[ -z "$PKG_EMAIL" ]]; then
+        echo -e "$_COLOR_RED The email is missing in the control file.$_COLOR_RESET"
+        return
+    fi
+
+    # Check if the PGP key exists
+    #
+    if ! [[ "$(gpg --list-keys)" == *"$PKG_EMAIL"* ]] ; then
+        echo -e "$_COLOR_RED The root keyring do not contains the private key for '$PKG_EMAIL'.$_COLOR_RESET"
+        return
+    fi
+
+    # Sign the package
+    #
+    if [ "$1" == "deb" ]; then
+        dpkg-sig -k "$PKG_EMAIL" --sign builder "$PKG_DEB_PATH"
     else
-        tar -pczf "$path_dirname/$new_basename".tar.gz -C "$path" . 
-    fi  
+        gpg --local-user "$PKG_EMAIL" --detach --sign "$PKG_TARGZ_PATH"
+    fi
+}   
+
+
+function CleanTmp {
+    echo -e "\n$_COLOR_BLUE Cleaning the TMP directory...$_COLOR_RESET"
+    rm -rf "$SRC_TMP_DIRECTORY"
+    echo " "
+}   
+
+
+function CopyChangelog {
+
+    if [ $DONT_COPY_CHANGELOG -eq 1 ]; then
+        return
+    fi
+
+    echo -e "\n$_COLOR_BLUE Copying the changelog...$_COLOR_RESET"
+    cp "$CHANGELOG_COPY_PATH" "$CHANGELOG_PASTE_DIR"/"$PKG_BASENAME".changelog
+    echo -e " "
+
 }
 
 
-if [ $BUILD -gt 0 ]; then
-
+function SrcCopy {
     #
-    # ------- [Initialize the package] ------- 
+    # Copy of the source folder
     #
 
-    echo -e "\n$BLUE Performing control file checks... $RESET"
+    echo -e "\n$_COLOR_BLUE Copying the project to a TMP dir... $_COLOR_RESET"
 
-    if ! [ -f "$path/DEBIAN/control" ]; then
-        echo -e "$RED The control file is missing.$RESET"
-        exit
+    rsync -av --delete "$SRC_DIRECTORY"/ "$SRC_TMP_DIRECTORY" > /dev/null
+
+    if ! [ -d  "$SRC_TMP_DIRECTORY" ]; then
+        echo -e "$_COLOR_RED Critical error: Some error happened while copying the project. $_COLOR_RESET"
+        echo "$SRC_TMP_DIRECTORY"
+        exit 1
     fi
-    
-    Control_Version=""
-    Control_Package_name=""
-    Control_Architecture=""
-    TarGzLocation=""
-        
-    while read -r LINE; do
-        if [[ "$LINE" == *"Version:"* ]] ; then
-            Control_Version=$(echo "$LINE" | sed 's/^.*Version://')
-            Control_Version=${Control_Version// /}
-        elif [[ "$LINE" == *"Package:"* ]] ; then
-            Control_Package_name=$(echo "$LINE" | sed 's/^.*Package://')
-            Control_Package_name=${Control_Package_name// /}
-        elif [[ "$LINE" == *"Architecture:"* ]] ; then
-            Control_Architecture=$(echo "$LINE" | sed 's/^.*Architecture://')
-            Control_Architecture=${Control_Architecture// /}
+
+}
+
+
+function ScanControlFile {
+    #
+    # Verify the DEBIAN/control file and retrieve: PKG_NAME, PKG_VERSION, PKG_ARCHITECTURE
+    #
+
+    echo -e "\n$_COLOR_BLUE Reading the control file...$_COLOR_RESET"
+
+    if ! [ -f "$SRC_DIRECTORY/DEBIAN/control" ]; then
+        echo -e "$_COLOR_RED The control file is missing.$_COLOR_RESET"
+        exit 1
+    fi
+
+    local file_line
+
+    while read -r file_line; do
+        if [[ "$file_line" == *"Version:"* ]] ; then
+            PKG_VERSION=$(echo "$file_line" | sed 's/^.*Version://')
+            PKG_VERSION=${PKG_VERSION// /}
+
+        elif [[ "$file_line" == *"Package:"* ]] ; then
+            PKG_NAME=$(echo "$file_line" | sed 's/^.*Package://')
+            PKG_NAME=${PKG_NAME// /}
+
+        elif [[ "$file_line" == *"Architecture:"* ]] ; then
+            PKG_ARCHITECTURE=$(echo "$file_line" | sed 's/^.*Architecture://')
+            PKG_ARCHITECTURE=${PKG_ARCHITECTURE// /}
+
+        elif [[ "$file_line" == *"Maintainer:"*\<*\@*\>* ]] ; then
+            PKG_EMAIL=${file_line%>*}
+            PKG_EMAIL=$(echo "$PKG_EMAIL" | sed 's/^.*<//')
         fi
-    done < "$path"/DEBIAN/control
-    
-    
-    if [ -z "$Control_Package_name" ]; then
-        echo -e "$RED The control package name is missing. $RESET"
-        exit
-    fi
-    
-    if [ -z "$Control_Version" ]; then
-        echo -e "$RED The control package version is missing. $RESET"
-        exit
-    fi
-    
-    if [ -z "$Control_Architecture" ]; then
-        echo -e "$RED The control package architecture is missing. $RESET"
-        exit
-    fi
-    
-    scan_build_deb_file
-    
-    new_basename="$Control_Package_name"_"$Control_Version"_"$Control_Architecture"
 
-    #
-    # Copy of the original folder (We work with a temporary folder, not with the original.)
-    #
+    done < "$SRC_TMP_DIRECTORY/DEBIAN/control"
 
-    echo -e "\n$BLUE Preparing the package... $RESET"
-
-    rsync -av --delete "$path/" "$path_dirname/$new_basename"_tmp > /dev/null
-    path="$path_dirname/$new_basename"_tmp
-    
-    if ! [ -d  "$path" ]; then
-        echo -e "$RED Some error happened while copying the data. $RESET"
-        echo "$path"
-        exit
+    if [ -z "$PKG_NAME" ]; then
+        echo -e "$_COLOR_RED The package name (Package:) is missing in the control file.$_COLOR_RESET"
+        exit 1
     fi
-    cd "$path" || (echo "exit error because wrong path='$path'" && exit)
-    
-    # Change the folder permissions
-    #
-    chown root:root -R "$path"
 
+    if [ -z "$PKG_VERSION" ]; then
+        echo -e "$_COLOR_RED The package version (Version:) is missing in the control file. $_COLOR_RESET"
+        exit 1
+    fi
+
+    if [ -z "$PKG_ARCHITECTURE" ]; then
+        echo -e "$_COLOR_RED The package architecture (Architecture:) is missing in the control file. $_COLOR_RESET"
+        exit 1
+    fi
+
+}
+
+
+function SrcClean {
+
+    echo -e "\n$_COLOR_BLUE Removing unwanted data...$_COLOR_RESET"
 
     # Remove un-wanted files of the root folder
     #
-    for file in "$path_dirname/$new_basename"_tmp/* ;do
+    for file in "$SRC_TMP_DIRECTORY"/* ;do
         if [ -f "$file" ]; then
             rm -f "$file"
-            echo "Deleted: ${file#"$path"}"
+            echo "Deleted: ${file#"$SRC_TMP_DIRECTORY"}"
         fi
     done
 
     # Remove un-wanted dirs of the root folder
     #
-    for dir in "$path_dirname/$new_basename"_tmp/.* ;do
+    for dir in "$SRC_TMP_DIRECTORY"/.* ;do
         if [ -d "$dir" ]; then
             rm -rf "$dir"
-            echo "Deleted: ${dir#"$path"}"
+            echo "Deleted: ${dir#"$SRC_TMP_DIRECTORY"}"
         fi
     done
 
+    # Remove un-wanted extensions
     #
-    # ------- [Modify the package] ------- 
+    local base_name
+    local file_abs_path
+    local file_local_path
+
+    while read -r file_abs_path; do
+        if [ -f "$file_abs_path" ]; then
+
+            file_local_path=${file_abs_path#"$SRC_DIRECTORY"}
+            base_name=${file_abs_path##*/}
+
+            if [[ $base_name == *.pyc ]]       ||
+               [[ $base_name == __pycache__ ]] ||
+               [[ $base_name == *~ ]]          ; then
+
+                rm -rf "$file_abs_path"
+                echo "Deleted: $file_local_path"
+            fi
+        fi
+    done <<< "$(find "$SRC_TMP_DIRECTORY")"
+
+}
+
+
+function SrcChmod {
+    #
+    # Change the folder permissions
     #
 
-    # Remove some possible existing data created by a previous build
-    #
-    if [ -f "/tmp/build_paths" ]; then
-        rm -rf "/tmp/build_paths"
+    echo -e "\n$_COLOR_BLUE Changing the permissions...$_COLOR_RESET"
+
+    chown root:root -R "$SRC_TMP_DIRECTORY"
+
+    local file_mime
+    local file_path
+    local file_name
+    local file_abs_path
+
+    while read -r file_abs_path; do
+        if [ -f "$file_abs_path" ]; then
+
+            file_mime=$(file --mime-type "$file_abs_path")
+            file_path=${file_abs_path#"$SRC_TMP_DIRECTORY"}
+            file_name=${file_abs_path##*/}
+
+            if [[ $file_mime == *text/x-shellscript* ]]        ||
+               [[ $file_mime == *text/x-python* ]]             ||
+               [[ $file_mime == *text/x-ruby* ]]               ||
+               [[ $file_mime == *application/x-executable* ]]  ||
+               [[ $file_mime == *application/octet-stream* ]]  ||
+               [[ $file_mime == *text/x-perl* ]]               ||
+               [[ $file_mime == *inode/x-empty* ]]             || # mimetype of __init__.py
+               [[ $file_name == *.py ]]                        ||
+               [[ $file_name == *.rb ]]                        ||
+               [[ $file_name == *.pl ]]                        ||
+               [[ $file_name == *.sh ]]                        ; then
+
+                chmod 0755 "$file_abs_path"
+                echo "0755: $file_path"
+            fi
+        fi
+    done <<< "$(find "$SRC_TMP_DIRECTORY")"
+
+}
+
+function SrcCompress {
+
+    echo -e "\n$_COLOR_BLUE Compressing manuals...$_COLOR_RESET"
+
+    local file_abs_path
+    local file_local_path
+    local file_mime
+
+    while read -r file_abs_path; do
+          if [ -f "$file_abs_path" ]; then
+
+              file_mime=$(file --mime-type "$file_abs_path")
+              file_local_path=${file_abs_path#"$SRC_DIRECTORY"}
+
+              if [[ $file_mime == *text/troff* ]]    ; then
+                  gzip "$file_abs_path"
+                  echo "Gzip: $file_local_path"
+              fi
+          fi
+      done <<< "$(find "$SRC_TMP_DIRECTORY")"
+
+}
+
+
+function SrcReplaceGlobal {
+
+    if [ "$DONT_REPLACE_GLOBAL_VARIABLES" -eq 1 ]; then
+        return
     fi
-    find "$PWD" > "/tmp/build_paths"
-    
-    
+
     # Replace the global variables, change the files permissions and delete the backups
     #
+    echo -e "\n$_COLOR_BLUE Replacing Global Variables...$_COLOR_RESET"
+
+    local current_year
+    local current_date_time
+    local current_date
+
     current_year=$(date +"%Y")
     current_date_time=$(date)
     current_date=$(date +%Y-%m-%d)
-    
-    while read -r LINE; do
-        if [ -f "$LINE" ]; then
-            
-            mimetype=$(file --mime-type "$LINE")
-            local_path=${LINE#"$path"}
-            base_name=${LINE##*/}
-            
-            if [ "$DONT_REPLACE_GLOBAL_VARIABLES" -eq 0 ]; then
-                if grep -q "DEB_BUILDER_VERSION" "$LINE"; then
-                    sed -i "s/DEB_BUILDER_VERSION/$Control_Version/g" "$LINE"
-                    echo "Version Replaced: $local_path"
-                fi
-                
-                if grep -q "DEB_BUILDER_DATE_TIME" "$LINE"; then
-                    sed -i "s/DEB_BUILDER_DATE_TIME/$current_date_time/g" "$LINE"
-                    echo "Date Time Replaced: $local_path"
-                fi
-                
-                if grep -q "DEB_BUILDER_YEAR" "$LINE"; then
-                    sed -i "s/DEB_BUILDER_YEAR/$current_year/g" "$LINE"
-                    echo "Year Replaced: $local_path"
-                fi
-                
-                if grep -q "DEB_BUILDER_DATE" "$LINE"; then
-                    sed -i "s/DEB_BUILDER_DATE/$current_date/g" "$LINE"
-                    echo "Date Replaced: $local_path"
-                fi
-            fi
-            
 
-            if [[ $base_name == *.pyc ]]                        ||
-                 [[ $base_name == *~ ]]                         ; then
-                rm -rf "$LINE"
-                echo "Deleted: $local_path"
-                
-            elif [[ $mimetype == *text/troff* ]]    ; then
-                gzip "$LINE"
-                echo "Gzip: $local_path"
-            
-            elif [[ $mimetype == *text/x-shellscript* ]]        || 
-                 [[ $mimetype == *text/x-python* ]]             ||
-                 [[ $mimetype == *text/x-ruby* ]]               ||
-                 [[ $mimetype == *application/x-executable* ]]  ||
-                 [[ $mimetype == *application/octet-stream* ]]  ||
-                 [[ $mimetype == *text/x-perl* ]]               ||
-                 [[ $mimetype == *inode/x-empty* ]]             || # mimetype of __init__.py
-                 [[ $base_name == *.py ]]                       ||
-                 [[ $base_name == *.rb ]]                       ||
-                 [[ $base_name == *.pl ]]                       ||
-                 [[ $base_name == *.sh ]]                       ; then 
-                 
-                chmod 0755 "$LINE"
-                echo "0755: $local_path"
+    local file_abs_path
+    local file_local_path
+
+    while read -r file_abs_path; do
+        if [ -f "$file_abs_path" ]; then
+
+            file_local_path=${file_abs_path#"$SRC_DIRECTORY"}
+
+            if grep -q "DEB_BUILDER_VERSION" "$file_abs_path"; then
+                sed -i "s/DEB_BUILDER_VERSION/$PKG_VERSION/g" "$file_abs_path"
+                echo "Version Replaced: $file_local_path"
             fi
+
+            if grep -q "DEB_BUILDER_DATE_TIME" "$file_abs_path"; then
+                sed -i "s/DEB_BUILDER_DATE_TIME/$current_date_time/g" "$file_abs_path"
+                echo "Date Time Replaced: $file_local_path"
+            fi
+
+            if grep -q "DEB_BUILDER_YEAR" "$file_abs_path"; then
+                sed -i "s/DEB_BUILDER_YEAR/$current_year/g" "$file_abs_path"
+                echo "Year Replaced: $file_local_path"
+            fi
+
+            if grep -q "DEB_BUILDER_DATE" "$file_abs_path"; then
+                sed -i "s/DEB_BUILDER_DATE/$current_date/g" "$file_abs_path"
+                echo "Date Replaced: $file_local_path"
+            fi
+
         fi
-    done < "/tmp/build_paths"
-    
-    
-    # Replace the variables of the control file
+    done <<< "$(find "$SRC_TMP_DIRECTORY")"
+
+}
+
+function SrcFillControlFile {
+    echo -e "\n$_COLOR_BLUE Filling the control file...$_COLOR_RESET"
+
+    local folder_size
+    local debian_size
+    local pkg_size
+
+    folder_size=$(du -sb "$SRC_DIRECTORY" | cut -f1)
+    debian_size=$(du -sb "$SRC_DIRECTORY"/DEBIAN | cut -f1)
+    pkg_size=$((folder_size-debian_size))
+    pkg_size=$((pkg_size/1000))
+
+    echo -e "Installed-Size: $pkg_size kB"
+    sed -i "s/DEB_BUILDER_SIZE/$pkg_size/g" "$SRC_DIRECTORY"/DEBIAN/control
+}
+
+function BuildPkgDeb {
+
+    # Build the package
     #
-    echo -e "\n$BLUE Filling the control file... $RESET"
-    Folder_Size=$(du -sb "$path" | cut -f1)
-    DEBIAN_Size=$(du -sb "$path/DEBIAN" | cut -f1)
-    SIZE=$((Folder_Size-DEBIAN_Size))
-    SIZE=$((SIZE/1000))
-    echo -e "Installed-Size: $SIZE kB"
-    sed -i "s/DEB_BUILDER_SIZE/$SIZE/g" "$path/DEBIAN/control"
+    echo -e "\n$_COLOR_BLUE Building $PKG_BASENAME...$_COLOR_RESET"
 
+    dpkg -b "$SRC_TMP_DIRECTORY" "$SRC_PARENT_DIR"
 
-    #
-    # ------- [Build] ------- 
-    #
-
-    if [ $BUILD -eq 1 ]; then # Debian Package
-        build_debian_package
-        sign_the_package deb
-        clean_data
-        copy_changelog
-
-
-    elif [ $BUILD -eq 2 ]; then # Tar Gz
-        build_tg_package
-        sign_the_package tg
-        clean_data
-        copy_changelog
-
-    elif [ $BUILD -eq 3 ]; then # Deb & Tar Gz
-        build_tg_package
-        sign_the_package tg
-
-        echo -e "\n$BLUE Building the Debian Package $RESET"
-        build_debian_package
-        sign_the_package deb
-
-        clean_data
-        copy_changelog
+    if ! [ -f "$PKG_DEB_PATH" ]; then
+        echo -e "$_COLOR_RED The deb package is missing! the program will exit.$_COLOR_RESET"
+        rm -rf "$SRC_TMP_DIRECTORY"
+        exit 1
     fi
-fi
-
-#
-# ------- [Extra functions] ------- 
-#
-
-
-# Help Message
-#
-if [ "$HELP" -eq 1 ]; then
-    echo "
- Usage:
-    build-deb <Command> [Arguments...]
-            
- Command:
     
-    <source folder> Folder containing a DEBIAN structure.
-            *By default it builds a Debian Package.
+    # Install the package
+    #
+    if [ $DONT_INSTALL -eq 0 ]; then
+        echo -e "\n$_COLOR_BLUE Installing the package...$_COLOR_RESET"
+        dpkg -i "$PKG_DEB_PATH"
+    fi
+    
+    # Add the pacakge to reprepro
+    #
+    if [ $DONT_ADD_TO_REPREPRO -eq 0 ]; then
+
+        if [ ! -f /usr/bin/reprepro ]; then
+            echo -e "$_COLOR_RED Error: /usr/bin/reprepro is missing.$_COLOR_RESET"
+
+        else
+            echo -e "$_COLOR_BLUE Adding the package to the local repository $_COLOR_RESET"
+
+            if [ "$FORCE_REPREPRO" -eq 1 ]; then
+                /usr/bin/reprepro remove "$REPO_CODENAME" "$PKG_NAME"
+            fi
+
+            /usr/bin/reprepro --ask-passphrase -Vb . includedeb "$REPO_CODENAME" "$PKG_DEB_PATH"
+        fi
+    fi
         
-    -c,     --control   Template of the control file.
-    -o,     --options   Template of the options file.
-
-    -h,     --help      Display this dialog.
-    -v,     --version   Display the current version.
-    -l,     --license   Display the license.
-    
- Arguments:
-  
-    -di,        --dont-install  
-    -drgv,      --dont-replace-global-variables
-    -dcpc,      --dont-copy-changelog
-    -frepo,     --force-reprepro
-    -drepo,     --dont-add-reprepro
-    -tgz,       --targz
-    -deb-tgz,   --debian-targz
-    -ds,        --dont-sign
-    -ds-tgz,    --dont-sign-targz
-    
- Global Variables:
-
-    DEB_BUILDER_VERSION      Value of the Version field of the control file.
-    DEB_BUILDER_DATE_TIME    Format: \"Sat Jan 10 16:32:30 CET 2015\"
-    DEB_BUILDER_YEAR         Format: \"2015\"
-    DEB_BUILDER_DATE         Format: \"Year-Month-Day\"
-    
-    
- Control File:
-
-    Installed-Size: DEB_BUILDER_SIZE
-    
-"
-fi
+}
 
 
-# Reprepro file (template)
-#
-if [ $OPTIONS_FILE -eq 1 ]; then
-    echo "
-# This is a build-deb Configuration file.
-# This file customizes the way of building packages.
-# Empty options are ignored.
-
-# Default arguments separated by commas 
-Arguments:
-
-# Add the package to a reprepro repository
-RepositoryLocation:
-CodeName:
-
-# Copy the changelog somewhere
-CopyChangelog:
-
-# Destination folder when creating Tar.gz packages
-TarGzLocation:
-
-" > BUILD_DEB
-fi  
+function BuildPkgTgz {
+    echo -e "\n$_COLOR_BLUE Compressing TarGz \"$PKG_BASENAME\"...$_COLOR_RESET"
+    tar -pczf "$PKG_TARGZ_PATH" -C "$SRC_DIRECTORY" .
+}
 
 
-# Control file (template)
-#
-if [ $CONTROL_FILE_TEMPLATE -eq 1 ]; then
-    if ! [ -d DEBIAN ]; then
-        mkdir DEBIAN
+function BuildPkgs {
+
+    # Basic checks
+    #
+    if [ $BUILD_PKG -eq 0 ] || [ $BUILD_PKG -gt 3 ]; then
+        echo -e "$_COLOR_RED Critical Error: No valid build was entered $_COLOR_RESET"
+        exit 1
     fi
-    if [ -f DEBIAN/control ]; then
-        echo "The control file already exists."
-    else
-        echo "Package:
-Version:
-Architecture:
-Maintainer: name <email>
-Depends: prog1, prog2 (>=2.0), etc,
-Installed-Size: DEB_BUILDER_SIZE
-Section: Extras
-Priority: Optional
-Homepage:
-Description: Here you put a 1 line description, Less than 80 chars
- Here you put a long description...
- .
- The point makes an empty line between the first paragraph and this one...
-" > DEBIAN/control
+
+    if [ "$(id -u)" != "0" ]; then
+        echo -e "$_COLOR_RED You need root permission for building Debian packages.$_COLOR_RESET" 1>&2
+        exit 1
     fi
-fi
+
+    # Define the global variables for building the package
+    #
+    SRC_PARENT_DIR=$(dirname "$SRC_DIRECTORY")
+    TARGZ_DIR=$SRC_PARENT_DIR
+    ScanOptionsFile
+
+    # Prepare the sources in a TMP directory
+    #
+    SRC_TMP_DIRECTORY="$SRC_PARENT_DIR"/"$PKG_BASENAME"_tmp
+    SrcCopy
+
+    ScanControlFile
+    PKG_BASENAME="$PKG_NAME"_"$PKG_VERSION"_"$PKG_ARCHITECTURE"
+    PKG_DEB_PATH="$SRC_PARENT_DIR"/"$PKG_BASENAME".deb
+    PKG_TARGZ_PATH="$TARGZ_DIR"/"$PKG_BASENAME".tar.gz
+
+    SrcClean
+    SrcChmod
+    SrcCompress
+    SrcReplaceGlobal
+    SrcFillControlFile
+
+    # Build the packages
+    #
+    if [ $BUILD_PKG -eq 2 ] || [ $BUILD_PKG -eq 3 ]; then
+        echo -e "\n$_COLOR_BLUE Building a Tar.gz Package...$_COLOR_RESET"
+        BuildPkgTgz
+        SignPkg "tgz"
+    fi
+
+    if [ $BUILD_PKG -eq 1 ] || [ $BUILD_PKG -eq 3 ]; then
+        echo -e "\n$_COLOR_BLUE Building a Debian Package...$_COLOR_RESET"
+        BuildPkgDeb
+        SignPkg "deb"
+    fi
+
+    # Clean the data
+    #
+    CleanTmp
+    CopyChangelog
+
+}
+
+function Main {
+
+    ScanCmdArgs "$@"
+
+    if [ $DISPLAY_HELP -eq 1 ]; then
+        PrintHelp
+        exit 0
+    fi
+
+    if [ $DISPLAY_LICENSE -eq 1 ]; then
+        PrintLicense
+        exit 0
+    fi
+
+    if [ $GENERATE_TEMPLATE_OPTIONS -eq 1 ]; then
+        GenTemplateOptions
+        exit 0
+    fi
+
+    if [ $GENERATE_TEMPLATE_CONTROL -eq 1 ]; then
+        GenTemplateControl
+        exit 0
+    fi
+
+    BuildPkgs
+    exit 0
+}
 
 
-# License text
-#
-if [ $LICENSE_DIALOG -eq 1 ]; then
-    echo "
-Copyright (C) 2014-2016, 2025 Rafael Senties Martinelli
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License 3 as published by
-the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software Foundation,
-Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
-"
-fi
-
+Main "$@"
