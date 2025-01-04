@@ -1,0 +1,17 @@
+
+# This is a build-deb Configuration file.
+# This file customizes the way of building packages.
+# Empty options are ignored.
+
+# Default arguments separated by commas
+Arguments:-drgv
+
+# Add the package to a reprepro repository
+RepositoryLocation:
+CodeName:
+
+# Copy the changelog somewhere
+CopyChangelog:
+
+# Destination folder when creating Tar.gz packages
+TarGzLocation:
