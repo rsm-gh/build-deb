@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#  Copyright (C) 2014-2016, 2025 Rafael Senties Martinelli
+#  Copyright (C) 2014-2016, 2024-2025 Rafael Senties Martinelli
 #
 #  This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License 3 as published by
@@ -23,12 +23,10 @@ _COLOR_BLUE="\e[94m"
 
 DONT_INSTALL=0
 DONT_REPLACE_GLOBAL_VARIABLES=0
-DONT_SIGN=0
 FORCE_REPREPRO=0
 DONT_ADD_TO_REPREPRO=0
 DONT_COPY_CHANGELOG=0
 DONT_SIGN=0
-DONT_SIGN_TGZ=0
 BUILD_PKG=1
 DISPLAY_HELP=0
 DISPLAY_LICENSE=0
@@ -82,7 +80,6 @@ Arguments:
   -tgz,       --targz
   -deb-tgz,   --debian-targz
   -ds,        --dont-sign
-  -ds-tgz,    --dont-sign-targz
 
 Global Variables:
 
@@ -209,9 +206,6 @@ function ProcessCMDArg {
     ;;
         -ds|--dont-sign)
             DONT_SIGN=1
-    ;;
-        -ds-tgz|--dont-sign-targz)
-            DONT_SIGN_TGZ=1                          
     ;;
         -tgz|--targz)
             BUILD_PKG=2
@@ -429,10 +423,6 @@ function SignPkg {
         return
     fi
 
-    if ! [[ "$1" == "deb" ]] && [[ $DONT_SIGN_TGZ -eq 1 ]]; then
-        return
-    fi
-
     if [ "$1" == "deb" ]; then
         echo -e "\n$_COLOR_BLUE Signing $PKG_DEB_PATH...$_COLOR_RESET"
     else
@@ -454,7 +444,7 @@ function SignPkg {
     # Sign the package
     #
     if [ "$1" == "deb" ]; then
-        dpkg-sig -k "$PKG_EMAIL" --sign builder "$PKG_DEB_PATH"
+        gpg --local-user "$PKG_EMAIL" --detach --sign "$PKG_DEB_PATH"
     else
         gpg --local-user "$PKG_EMAIL" --detach --sign "$PKG_TARGZ_PATH"
     fi
