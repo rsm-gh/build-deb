@@ -155,9 +155,6 @@ ARGUMENTS
        -ds, --dont-sign
                 Do not sign the package.
 
-       -ds-tgz, --dont-sign-targz
-                Do not sign Tar.gz packages.
-
        -tgz, --targz
                 Create a Tar.gz archive instead of a .deb package.
 
