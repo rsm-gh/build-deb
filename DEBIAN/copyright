@@ -2,18 +2,9 @@
 Name: build-deb
 Source: https://github.com/rsm-gh/build-deb
 
-Copyright: Copyright (C) 2015, 2024 Rafael Senties Martinelli
+Copyright: Copyright (C) 2014-2016, 2024-2025 Rafael Senties Martinelli
+Files: *
 License: GPL-3.0-only
-Files:
-	install.sh
-	uninstall.sh
-
-Copyright: Copyright (C) 2015, 2024-2025 Rafael Senties Martinelli
-License: GPL-3.0-only
-Files:
-    README.md
-	usr/bin/build-deb
-	usr/share/man/man8/build-deb.8
 
 License: GPL-3.0-only
 License text is available in the file LICENSE in the source package.
