@@ -1,7 +1,7 @@
 Package: build-deb
 Version: 1.6.2
 Architecture: all
-Maintainer: Rafael Senties Martinelli <rafael@senties-martinelli.com>
+Maintainer: Rafael Senties Martinelli <rafael@rsm92.fr>
 Depends: dpkg, rsync, gzip, file, tar, sed, coreutils
 Recommends: reprepro, gpg
 Installed-Size: DEB_BUILDER_SIZE
