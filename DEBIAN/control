@@ -1,5 +1,5 @@
 Package: build-deb
-Version: 1.6.2
+Version: 1.6.3
 Architecture: all
 Maintainer: Rafael Senties Martinelli <rafael@rsm92.fr>
 Depends: dpkg, rsync, gzip, file, tar, sed, coreutils

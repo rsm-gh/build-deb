@@ -15,7 +15,7 @@
 #   along with this program; if not, write to the Free Software Foundation,
 #   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
 
-_VERSION=1.6.1
+_VERSION=1.6.3
 
 _COLOR_RED="\e[31m"
 _COLOR_RESET="\e[0m"
