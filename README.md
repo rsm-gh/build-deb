@@ -86,7 +86,7 @@ COMMANDS
               tory. The folder must have a valid Debian structure.
 
               For   more  details  about  the  folder  structure,  you  can  visit:
-              https://rsm92.dev/articles/debian-packages#build
+              https://rsm92.fr/articles/debian-packages#build
 
               Default:
                      • Set executable permissions for Bash, Python, Perl, and  Ruby
