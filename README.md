@@ -69,7 +69,7 @@ NAME
        build-deb - Easy Debian and Tar.gz package builder.
 
 HOME
-       https://github.com/rsm-gh/build-deb
+       https://codeberg.org/rsm92/build-deb
 
 DESCRIPTION
        This script facilitates the creation of Debian packages for binaries or in‐
