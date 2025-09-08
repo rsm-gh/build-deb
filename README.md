@@ -1,5 +1,5 @@
 
-> ⚠️ **IMPORTANT:** This repository has been migrated to [Codeberg](https://codeberg.org/rsm92/build-deb).  
+> ⚠️ **IMPORTANT:** This repository is deprecated, the code has been migrated to [Codeberg](https://codeberg.org/rsm92/build-deb).  
 > Use the new source to ensure having the last features & patches.
 >
 
