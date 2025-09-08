@@ -1,3 +1,8 @@
+
+> ⚠️ **IMPORTANT:** This repository has been migrated to [Codeberg](https://codeberg.org/rsm92/build-deb).  
+> Use the new source to ensure having the last features & patches.
+>
+
 # build-deb
 
 `build-deb` is a bash script that simplifies the process of building Debian packages. Its main
